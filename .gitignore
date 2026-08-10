@@ -1,0 +1,25 @@
+dist/
+build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+site/
+.venv/
+.cache/
+.coverage
+# written by scripts/quality_metrics.py while it runs; the snapshot it keeps
+# is quality-baseline.json, which IS versioned
+complexipy.csv
+
+# per-language copies of docs/_theme and shared/references.bib,
+# recreated by docs/build.sh on every run
+docs/en/_extensions/
+docs/de/_extensions/
+docs/en/fonts/
+docs/de/fonts/
+docs/en/theme/
+docs/de/theme/
+docs/en/references.bib
+docs/de/references.bib

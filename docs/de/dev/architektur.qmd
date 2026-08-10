@@ -1,0 +1,113 @@
+---
+title: "Architektur"
+---
+
+
+Dieser Teil richtet sich an alle, die das Paket verändern, portieren oder
+prüfen wollen, ob seinen Zahlen zu trauen ist. Er setzt voraus, dass Sie den
+Anwendungsteil gelesen haben.
+
+## Der Zuschnitt
+
+```
+src/qdapy/
+  contract.py    der Austausch-Vertrag und die mitgelieferten Referenzdateien
+  read.py        Exporte lesen und prüfen
+  frames.py      die Tabellen, aus denen jede Abbildung gebaut wird
+  agreement.py   die sechs Reliabilitätskoeffizienten
+  reliability.py Intervalle, Übereinstimmung je Code, die Kappa-Diagnostik
+  unitizing.py   haben die Kodierenden überhaupt dieselben Stellen markiert
+  gamma.py       Übereinstimmung, gemessen gegen die beste Zuordnung
+  progress.py    Sättigung als Zahl, und Kodierer-Drift
+  discovery.py   wie weit von der Sättigung entfernt, und wie viel weiter
+  planning.py    wie viel Material eine Studie brauchen wird
+  reporting.py   die COREQ- und SRQR-Checklisten
+  stats.py       die Inferenzstatistik
+  gg.py          plotnine-Backend
+  sns.py         seaborn-Backend
+  vega.py        die Vega-Lite-Grafiken des Plugins, über Altair
+  data/          Vertrag + neun Beispiele + expected.json
+```
+
+Die Abhängigkeiten laufen nur in eine Richtung: `gg`, `sns` und `vega`
+importieren aus `frames`, `stats` und `agreement`, nie umgekehrt. `frames`
+importiert aus dem Paket gar nichts, nur das, was pandas mitbringt. Genau das
+hält die drei Backends davon ab, auseinanderzulaufen — keines kann sich seine
+Daten selbst zurechtlegen, ohne dass die Änderung in `frames` auftaucht, wo die
+Tests sind.
+
+## Warum die Tabellen ein eigenes Modul sind
+
+Der naheliegende Entwurf legt die Datenaufbereitung in jede Zeichenfunktion.
+Das funktionierte — und es garantierte, dass das seaborn-Balkendiagramm und das
+plotnine-Balkendiagramm sich irgendwann über `top=25` oder über die
+Sortierung bei Gleichstand uneinig werden. Die Tabellen herauszulösen macht
+diese Fehlerklasse unschreibbar: Es gibt genau ein `code_counts()`, und beide
+Backends rufen es auf.
+
+Es bedeutet außerdem, dass Nutzende die Zahlen ohne die Abbildung bekommen
+können — und genau danach fragen Anhänge und Gutachtende.
+
+## Warum die Backends erst bei Bedarf laden
+
+`import qdapy` importiert weder matplotlib noch seaborn noch plotnine.
+Zusammen brauchen sie etwa dreieinhalb Sekunden, und eine Datei zu lesen, um
+einen Koeffizienten zu rechnen, sollte nicht für eine Abbildung bezahlen, die
+niemand wollte. `__getattr__` in `__init__.py` importiert ein Backend beim
+ersten Attributzugriff und legt es in `globals()` ab, sodass `qdapy.gg` sich
+von da an wie ein gewöhnliches Attribut verhält.
+
+Der Preis: Ein Tippfehler in einem Backend-Modul zeigt sich beim ersten
+Gebrauch statt beim Import. Die Testsuite fasst alle drei an, die CI merkt es
+also.
+
+## Lesen ist ein Kontrollpunkt, keine Bequemlichkeit
+
+`read()` hätte aus drei Zeilen `pandas.read_csv` bestehen können. Stattdessen
+prüft es den Formatstempel, die Version und die zugesagten Spalten und wirft
+`ContractError`, statt etwas Plausibles zurückzugeben. Die Überlegung
+dahinter: Eine falsche Zahl, die das Skript anhält, kostet eine Stunde; eine
+falsche Zahl, die es nicht anhält, kostet eine Berichtigung in einer
+Zeitschrift.
+
+Die Versionsprüfung ist mit Absicht unsymmetrisch. Ältere Versionen werden
+gelesen, neuere abgelehnt. Ein neuerer Export kann eine Spalte umbenannt oder
+ihre Bedeutung geändert haben, und dieses Paket hat keine Möglichkeit zu
+wissen, welches von beidem.
+
+## Ergebnisobjekte statt Tupel
+
+`chisq()`, `mds()`, `cluster()` und `ca()` geben Dataclasses zurück. Zum Teil
+der Lesbarkeit wegen, vor allem aber, damit ein Vorbehalt mit dem Ergebnis
+reisen kann: `expected_ok` steht neben dem p-Wert, `goodness` neben den
+Koordinaten, `cophenetic` neben dem Baum, `inertia_share` neben der Karte. Ein
+Tupel lädt dazu ein, nur das erste Element auszupacken.
+
+## Warum Gamma ein eigenes Modul ist
+
+`gamma.py` ist die einzige Stelle im Paket mit einer exakten kombinatorischen
+Suche. Die beste Zuordnung zu finden ist ein Mengenpartitionierungsproblem, ab
+drei Kodierenden NP-schwer, und die Umsetzung ist ein Branch and Bound mit
+Beschneidungsregel und zulässiger Schranke statt eines Aufrufs an einen Solver.
+Sie von `unitizing.py` getrennt zu halten sorgt dafür, dass die billigen Maße
+billig zu lesen bleiben und die eine Funktion mit einem Suchbudget ins Auge
+fällt.
+
+Dieses Budget ist Absicht. Würde die Suche es überschreiten, ist das Ergebnis
+`nan` mit einer Begründung — nie der beste bis dahin gefundene Kandidat. Ein
+heuristisch erzeugtes Gamma ist kein Gamma, und eine Zahl, die mal exakt und
+mal genähert ist, ist schlechter als gar keine.
+
+## Was bewusst fehlt
+
+* **Kein Schreiben.** Nichts hier verändert eine Zotero-Bibliothek oder einen
+  Export. Kodiert wird im Plugin.
+* **Kein Zwischenspeichern gelesener Dateien.** Exporte sind klein und erneutes
+  Lesen ist billig; ein Cache schüfe nur einen Weg, auf dem die Daten mitten in
+  der Sitzung veralten.
+* **Keine Zeichenvoreinstellungen jenseits eines Themes.** Farben und
+  Beschriftungen sind Argumente, denn eine Abbildung in einem Aufsatz muss zum
+  Rest des Aufsatzes passen.
+* **Keine Copyleft-Abhängigkeiten.** Alles, was qdaPy hereinholt, ist BSD, MIT
+  oder PSF — niemand erbt damit eine Pflicht über die AGPL hinaus, siehe
+  [Entwurfsentscheidungen](entwurf.qmd).

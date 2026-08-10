@@ -1,0 +1,144 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+# PyPI normalises the name to `qdapy`, which is also the import name.
+name = "qdaPy"
+# Read from src/qdapy/_version.py rather than written twice: a release where
+# the metadata and `qdapy.__version__` disagree is a release nobody can cite.
+dynamic = ["version"]
+description = "Analyse qualitative coding from the zotQDA Zotero plugins, or from any REFI-QDA export"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE", "LICENSE-EXCEPTION.md"]
+authors = [{ name = "fre.ms", email = "fre.ms@fre.ms" }]
+maintainers = [{ name = "fre.ms", email = "fre.ms@fre.ms" }]
+keywords = [
+    "qualitative data analysis",
+    "qda",
+    "zotero",
+    "content analysis",
+    "intercoder reliability",
+    "krippendorff",
+    "coding",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Sociology",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "plotnine>=0.13",
+    "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+# rendering the plugin's own Vega-Lite charts unchanged
+vega = ["altair>=5.0"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "mypy>=1.14",
+    "build>=1.2",
+    "twine>=5.0",
+]
+# What `scripts/quality_metrics.py` needs. Pinned rather than floored: a
+# snapshot is only comparable with the next one if the measuring instrument
+# did not move underneath it.
+quality = [
+    "radon==6.0.1",
+    "complexipy==3.3.0",
+    "interrogate==1.7.0",
+    "vulture==2.14",
+    "coverage==7.6.10",
+]
+
+[project.urls]
+Homepage = "https://zotqda.org"
+Documentation = "https://qdapy.zotqda.org/"
+Source = "https://github.com/fre-ms/qdaPy"
+Issues = "https://github.com/fre-ms/qdaPy/issues"
+"R twin (qdaR)" = "https://github.com/fre-ms/qdaR"
+
+[tool.hatch.version]
+path = "src/qdapy/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qdapy"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src",
+    "tests",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "LICENSE-EXCEPTION.md",
+    "PROVENANCE.md",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["error::DeprecationWarning:qdapy.*"]
+
+[tool.mypy]
+# The package ships py.typed, so its own annotations are a promise to the
+# people who install it. `mypy src/qdapy` is expected to be clean.
+files = ["src/qdapy"]
+# No `python_version` pin: it would be checked against the numpy stubs of
+# whatever numpy is installed, and those use syntax newer than our floor.
+# The floor itself is enforced by `requires-python`.
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+[[tool.mypy.overrides]]
+# Not our annotations to write: these publish no stubs and no py.typed
+# marker. pandas-stubs is deliberately not a dev dependency -- it is a
+# third-party approximation that drifts against the installed pandas, and a
+# gate that fails for that reason teaches people to ignore the gate.
+module = ["pandas.*", "scipy.*", "seaborn.*", "plotnine.*", "altair.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "NPY", "PD", "C901"]
+ignore = [
+    "PD011",  # .values is not always the pandas attribute
+    "PD008",  # .at is the documented scalar accessor and is what we want
+    "PD013",  # .stack() unpivots a crosstab; .melt would drop the index
+]
+
+[tool.ruff.lint.mccabe]
+# McCabe (1976) recommends 10 as "a reasonable, but not magical, upper limit",
+# with an explicit exception for large CASE statements. The functions that
+# exceed it here carry a `noqa: C901` naming which case they are.
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+# the COREQ items are quoted verbatim from the published table; reflowing
+# them to fit a line limit would risk altering a checklist a reviewer
+# matches word for word against the original
+"src/qdapy/reporting.py" = ["E501"]

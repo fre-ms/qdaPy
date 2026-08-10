@@ -1,0 +1,99 @@
+---
+title: "Design decisions"
+---
+
+
+Each of these could reasonably have gone the other way. They are written down
+because the reasoning is the part that gets lost, and because anyone changing
+the code deserves to know which choices are load-bearing.
+
+## Failing on an unknown version
+
+**Decided:** refuse a newer exchange version; read older ones.
+
+The alternative is to read what you can and ignore the rest. That works right
+up to the release where a column changes meaning rather than name, and then it
+produces numbers that look fine. Since these numbers end up in publications,
+the failure mode has to be loud.
+
+## Uncoded segments are opt-in, not automatic
+
+**Decided:** `units()` only includes segments no coder coded when the caller
+passes the `uncoded` export.
+
+Including them silently would be defensible; it is usually the methodologically
+right choice, but it would also mean the same call produces different
+coefficients depending on which files happen to be at hand. Requiring the
+second file makes the decision visible in the code, which is where a reviewer
+can see it.
+
+## Multiple coding is set aside and counted
+
+**Decided:** a coder's several codes on one segment make that cell missing;
+the count is reported as `multi_set_aside`.
+
+Three alternatives were considered: pick the first code (arbitrary), treat the
+set as one compound category (invents categories nobody defined), or refuse to
+compute anything (unhelpful). Setting aside and counting is the only option
+that neither invents data nor hides how much was dropped. The per-code binary
+view exists for projects where multiple coding is the norm.
+
+## Inertia share relative to the whole table
+
+**Decided:** `ca().inertia_share` divides by total inertia, not by the
+retained dimensions.
+
+Normalising to the retained dimensions is common and always sums to 100 %,
+which reads as *this map shows everything*. The R twin had this bug, and the
+cross-language comparison found it. The check that pins it down is that total
+inertia must equal the chi-squared statistic over *n*.
+
+## Monte Carlo instead of exact for large tables
+
+**Decided:** exact Fisher only for two-by-two; permutation-based Monte Carlo
+with fixed margins beyond that, seeded.
+
+The exact test for an r-by-c table is only feasible for small counts. Six
+codes over five documents with a few hundred codings is already enough to
+exhaust the workspace of a standard implementation; the R twin aborted on
+exactly that. Table dimensions do not predict the cost; the counts do. So
+anything past two-by-two goes to simulation, and the seed makes the reported
+p-value reproducible.
+
+## Distribution name
+
+**Decided:** the distribution is `qdaPy`, normalised by PyPI to `qdapy`, which
+is also the import name.
+
+An earlier iteration used `qda-p` with import name `qdap`, because `qdap` was
+taken on PyPI by an unrelated project. `qdapy` turned out to be free, and `Py`
+is the conventional suffix anyway, so the hyphen was dropped.
+
+## No GPL dependencies
+
+**Decided:** keep the dependency set permissive (BSD, MIT, PSF).
+
+A copyleft dependency binds everyone downstream, so the bar for adding one is
+high. Correspondence analysis is computed here from a singular value
+decomposition rather than by pulling in a GPL library, which also makes it
+independent of the R twin's `MASS` dependency, so the two implementations check
+each other rather than sharing a code path.
+
+Adding a dependency is therefore a licensing decision as well as a technical
+one.
+
+## One function per equation
+
+`unitizing_alpha` used to be one long function. It is now four, and the split
+follows the paper rather than a line count: `_pair_disorder` is equation (16)
+for one pair of coders, `_observed_disorder` is (17) summing over pairs,
+`_expected_disorder` is (18), and `unitizing_alpha` combines them into (19).
+
+**The same split exists in qdaR and in qdaZ's `stats.js`**, with the same
+boundaries and matching names. That is the point: the three can still be read
+side by side against Krippendorff, which is the only practical way to check
+that three languages implement one formula. Splitting one of them alone would
+have bought a metric and cost the thing the metric was meant to protect.
+
+Before and after, the two implementations were run over the same eighty random
+configurations in all three languages and compared: identical to the last bit.

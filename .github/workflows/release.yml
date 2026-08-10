@@ -1,0 +1,113 @@
+name: Release
+
+# Two ways in:
+#   - push a tag `v0.1.0`   -> builds and publishes to PyPI
+#   - run it by hand        -> builds and publishes to TestPyPI by default
+#
+# The manual route exists because a version number is spent the moment it is
+# uploaded: PyPI never accepts the same one again, not even after the file is
+# deleted. Rehearsing on TestPyPI is the only way to find a broken README or a
+# missing file without burning a number.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to publish
+        type: choice
+        options: [testpypi, pypi]
+        default: testpypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: verify and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install the package and its test dependencies
+        run: uv sync --extra vega --group dev
+
+      - name: The tag must match the version in the package
+        # Without this a tag v0.2.0 happily publishes a package 0.1.0, and
+        # that number is then spent forever. Only meaningful for a tag push;
+        # a manual run has no tag to compare against.
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          version="$(uv run --no-sync python -c 'import qdapy; print(qdapy.__version__)')"
+          if [ "refs/tags/v$version" != "${{ github.ref }}" ]; then
+            echo "tag ${{ github.ref }} does not match version $version" >&2
+            exit 1
+          fi
+          echo "tag and version agree: $version"
+
+      - name: Run the suite
+        # A release is rare and a broken one is expensive. CI has tested this
+        # commit already; running it once more costs a minute.
+        run: uv run --no-sync pytest -ra
+
+      - name: ruff and mypy
+        run: |
+          set -euo pipefail
+          uv run --no-sync ruff check src tests scripts
+          uv run --no-sync mypy
+
+      - name: Build the sdist and the wheel
+        run: uv run --with build python -m build
+
+      - name: Check the metadata the way PyPI will
+        run: uv run --with twine twine check --strict dist/*
+
+      - name: Both artefacts must exist
+        # `python -m build` writing only one of them is a build failure that
+        # does not fail the build.
+        run: |
+          set -euo pipefail
+          ls -l dist/
+          test -n "$(find dist -name '*.whl'    -print -quit)"
+          test -n "$(find dist -name '*.tar.gz' -print -quit)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    name: publish to ${{ inputs.target || 'pypi' }}
+    needs: build
+    runs-on: ubuntu-latest
+    # The environment is where the protection lives: give `pypi` a required
+    # reviewer in the repository settings and every real release stops and
+    # waits for a click.
+    environment: ${{ inputs.target || 'pypi' }}
+    permissions:
+      # Trusted Publishing: GitHub mints a short-lived token for this one run,
+      # so there is no API token to store, leak or rotate. It also signs the
+      # artefacts as PEP 740 attestations.
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to TestPyPI
+        if: inputs.target == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+      - name: Publish to PyPI
+        if: inputs.target != 'testpypi'
+        uses: pypa/gh-action-pypi-publish@release/v1

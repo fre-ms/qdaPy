@@ -1,0 +1,119 @@
+---
+title: "Figures"
+---
+
+## One set of tables, three ways to draw them
+
+All three backends read their numbers from the same place, `qdapy.frames`.
+Swapping one for another therefore changes how a figure looks and never what it
+says, which also means you can start in seaborn and move to plotnine halfway
+through a paper without re-checking the values.
+
+Everything on this page is *live*: the code is executed when the
+documentation is built, and the figures are its actual output. The material
+is [the example study](example-data.qmd) that ships with the package — a
+synthetic study on workload in nursing, nine codes in three themes, eight
+interviews from two settings, coded by two people:
+
+```{python}
+import qdapy
+
+frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
+```
+
+The correspondence analysis puts codes **and** interviews into one map, and
+carries its own caveat: the share of inertia the two dimensions show is
+printed inside the figure, because a map without it looks equally
+trustworthy at 30% and at 90%:
+
+```{python}
+#| label: fig-ca
+#| fig-cap: "Codes and documents in one correspondence-analysis map. The two settings separate along dimension 1, each surrounded by the codes typical for it — and the figure itself states how much of the structure it shows."
+qdapy.gg.ca_map(frag)
+```
+
+Which codes appear on the same passages? The dendrogram clusters codes by
+co-occurrence and prints the cophenetic correlation — how faithfully the
+tree preserves the distances — in its title:
+
+```{python}
+#| label: fig-dendro
+#| fig-cap: "Codes clustered by co-occurrence (Jaccard distance, seaborn backend). The burden/coping pairs built into the material come back out as clusters."
+qdapy.sns.dendrogram(frag)
+```
+
+And the code-by-document matrix shows the same structure as a heatmap, one
+glance telling you which interviews carry which themes:
+
+```{python}
+#| label: fig-matrix
+#| fig-cap: "Codings per code and interview. The block structure between the two settings is the group difference the map above projects."
+qdapy.gg.code_matrix(frag)
+```
+
+| Backend | Import | Returns | Reach for it when |
+|---|---|---|---|
+| plotnine | `qdapy.gg` | a `ggplot` object | you think in the grammar of graphics, or want the figure to match the R package |
+| seaborn | `qdapy.sns` | a matplotlib `Axes` | the figure has to sit inside a layout you already have |
+| Vega-Lite | `qdapy.vega` | an Altair chart | the figure has to look exactly like it did in Zotero |
+
+Function names line up across the backends: `frequencies`, `code_matrix`,
+`timeline`, `saturation`, `mds`, `level_agreement`, `ca_map`, plus the
+`dendrogram` that only `qdapy.sns` provides.
+
+## Nothing appears on its own
+
+No function here calls `plt.show()`. Figures appear when your script says so:
+
+```python
+import matplotlib.pyplot as plt
+
+fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4))
+qdapy.sns.frequencies(frag, ax=left)
+qdapy.sns.saturation(history, ax=right)
+fig.savefig("figure-2.pdf")
+```
+
+Because every seaborn function accepts `ax=`, one of these figures can sit as
+a single panel inside a layout that is otherwise entirely yours.
+
+## Reading the numbers off a figure
+
+Often it is the table you want rather than the picture, whether for a
+supplement or because a reviewer asked to see the counts. The same calls
+that feed the figures return them directly:
+
+```{python}
+qdapy.code_counts(frag)
+```
+
+```python
+qdapy.code_matrix(frag, long=False)   # codes x documents
+qdapy.timeline(history)               # cumulative codings per coder
+qdapy.saturation(history)             # distinct codes over time
+qdapy.mds_points(frag)                # the scaling map as points
+qdapy.ca_points(frag)                 # codes and documents in one map
+```
+
+The last two are what the map figures are drawn from, and they carry the
+number the caption needs in `df.attrs`: `goodness` for the scaling,
+`inertia_shown` for the correspondence analysis.
+
+One thing to know about `timeline()`: it counts `add` events and ignores
+`remove`. A coding somebody applied and then withdrew did happen, but it is not
+part of what you ended up with, and a growth curve that keeps counting it
+flatters the result.
+
+## The plugin's own charts
+
+Every chart in qdaZ can be saved as a data-plus-specification pair. Rendering
+the specification reproduces the figure exactly as it looked in Zotero:
+
+```python
+spec = qdapy.vega.read_spec("frequencies.json")
+chart = qdapy.vega.render(spec, qdapy.code_counts(frag))
+```
+
+This needs Altair — `pip install "qdaPy[vega]"`. Use it when a figure must
+match the plugin; use the other two backends when it must match the rest of
+your manuscript.

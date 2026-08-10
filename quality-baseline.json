@@ -1,0 +1,183 @@
+{
+  "radon": {
+    "blocks": 121,
+    "mean_cc": 4.2,
+    "grade_histogram": {
+      "A": 91,
+      "B": 19,
+      "C": 9,
+      "D": 2
+    },
+    "functions_over_cc10": 11,
+    "over_cc10": [
+      {
+        "file": "gamma.py",
+        "name": "gamma",
+        "line": 291,
+        "cc": 25
+      },
+      {
+        "file": "reliability.py",
+        "name": "paradox",
+        "line": 182,
+        "cc": 21
+      },
+      {
+        "file": "read.py",
+        "name": "read",
+        "line": 45,
+        "cc": 20
+      },
+      {
+        "file": "unitizing.py",
+        "name": "unitizing_alpha",
+        "line": 194,
+        "cc": 16
+      },
+      {
+        "file": "gamma.py",
+        "name": "best_alignment",
+        "line": 189,
+        "cc": 15
+      },
+      {
+        "file": "reporting.py",
+        "name": "coreq",
+        "line": 87,
+        "cc": 14
+      },
+      {
+        "file": "agreement.py",
+        "name": "units",
+        "line": 117,
+        "cc": 13
+      },
+      {
+        "file": "agreement.py",
+        "name": "alpha",
+        "line": 358,
+        "cc": 13
+      },
+      {
+        "file": "reporting.py",
+        "name": "srqr",
+        "line": 216,
+        "cc": 13
+      },
+      {
+        "file": "agreement.py",
+        "name": "kappa",
+        "line": 266,
+        "cc": 12
+      },
+      {
+        "file": "progress.py",
+        "name": "saturation_ratio",
+        "line": 59,
+        "cc": 12
+      }
+    ],
+    "mi_by_module": {
+      "agreement.py": 39.48,
+      "gamma.py": 49.17,
+      "stats.py": 52.35,
+      "unitizing.py": 52.82,
+      "reliability.py": 53.3,
+      "reporting.py": 55.09,
+      "sns.py": 62.19,
+      "progress.py": 63.62,
+      "discovery.py": 63.83,
+      "read.py": 64.21,
+      "gg.py": 64.77,
+      "planning.py": 65.49,
+      "frames.py": 76.07,
+      "contract.py": 76.56,
+      "__init__.py": 82.5,
+      "vega.py": 83.8,
+      "_version.py": 100.0
+    },
+    "mi_min": 39.48
+  },
+  "complexipy": {
+    "functions": 106,
+    "max_cognitive": 32,
+    "functions_over_15": 2,
+    "worst": [
+      {
+        "file": "gamma.py",
+        "name": "best_alignment",
+        "cognitive": 32
+      },
+      {
+        "file": "agreement.py",
+        "name": "units",
+        "cognitive": 17
+      },
+      {
+        "file": "read.py",
+        "name": "read",
+        "cognitive": 15
+      },
+      {
+        "file": "gamma.py",
+        "name": "gamma",
+        "cognitive": 14
+      },
+      {
+        "file": "agreement.py",
+        "name": "alpha",
+        "cognitive": 14
+      }
+    ]
+  },
+  "ruff": {
+    "findings_by_rule": {},
+    "total_findings": 0
+  },
+  "mypy": {
+    "errors": 0,
+    "clean": true
+  },
+  "docstrings": {
+    "coverage_pct": 100.0,
+    "public_missing": 0,
+    "public_missing_names": [],
+    "note": null
+  },
+  "vulture": {
+    "candidates": 6,
+    "detail": [
+      "src/qdapy/__init__.py:89: unused function '__getattr__' (60% confidence)",
+      "src/qdapy/__init__.py:106: unused function '__dir__' (60% confidence)",
+      "src/qdapy/stats.py:235: unused variable 'distance' (60% confidence)",
+      "src/qdapy/stats.py:275: unused variable 'row_scores' (60% confidence)",
+      "src/qdapy/stats.py:276: unused variable 'col_scores' (60% confidence)",
+      "tests/test_plots.py:44: unused function '_close_figures' (60% confidence)"
+    ],
+    "typeddict_fields_ignored": 29
+  },
+  "coverage": {
+    "total_pct": 96.2,
+    "tests_passed": 448,
+    "suite_green": true,
+    "by_module_pct": {
+      "planning.py": 86.3,
+      "discovery.py": 90.5,
+      "agreement.py": 93.6,
+      "reliability.py": 95.9,
+      "vega.py": 96.0,
+      "gamma.py": 96.1,
+      "__init__.py": 96.3,
+      "unitizing.py": 96.7,
+      "reporting.py": 97.1,
+      "read.py": 97.3,
+      "stats.py": 98.1,
+      "_version.py": 100.0,
+      "contract.py": 100.0,
+      "frames.py": 100.0,
+      "gg.py": 100.0,
+      "progress.py": 100.0,
+      "sns.py": 100.0
+    }
+  }
+}

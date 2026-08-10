@@ -1,0 +1,103 @@
+---
+title: "Architecture"
+---
+
+
+This section is for anyone who wants to change the package, port it, or check
+whether its numbers can be trusted. It assumes you have read the user guide.
+
+## The shape of it
+
+```
+src/qdapy/
+  contract.py    the exchange contract and the bundled reference files
+  read.py        reading and validating exports
+  frames.py      the tables every figure is built from
+  agreement.py   the six reliability coefficients
+  reliability.py intervals, per-code agreement, the kappa diagnostics
+  unitizing.py   did the coders mark the same stretches at all
+  gamma.py       agreement measured against the best alignment
+  progress.py    saturation as a number, and coder drift
+  discovery.py   how far from saturation, and how much further to go
+  planning.py    how much material a study will need
+  reporting.py   the COREQ and SRQR checklists
+  stats.py       the inferential statistics
+  gg.py          plotnine backend
+  sns.py         seaborn backend
+  vega.py        the plugin's own Vega-Lite charts, via Altair
+  data/          contract + nine samples + expected.json
+```
+
+Dependencies run one way only: `gg`, `sns` and `vega` import from `frames`,
+`stats` and `agreement`, and never the other way round. `frames` imports
+nothing from the package except what pandas gives it. That is what keeps the
+three backends from drifting apart, none of them can prepare its own data
+without the change showing up in `frames`, where the tests are.
+
+## Why the tables are a separate module
+
+The obvious design puts the data preparation inside each plotting function.
+It would work, and it would guarantee that the seaborn bar chart and the
+plotnine bar chart eventually disagree about `top=25` or about how ties are
+ordered. Splitting the tables out makes that class of bug impossible to write:
+there is exactly one `code_counts()`, and both backends call it.
+
+It also means users can have the numbers without the figure, which is what
+supplements and reviewers ask for.
+
+## Why the backends load lazily
+
+`import qdapy` does not import matplotlib, seaborn or plotnine. Together they
+take about three and a half seconds, and reading a file to compute a
+coefficient should not pay for a figure nobody asked for. `__getattr__` in
+`__init__.py` imports a backend on first attribute access and caches it in
+`globals()`, so `qdapy.gg` behaves like an ordinary attribute from then on.
+
+The cost is that a typo in a backend module surfaces on first use rather than
+at import. The test suite touches all three, so CI catches it.
+
+## Reading is a checkpoint, not a convenience
+
+`read()` could have been three lines of `pandas.read_csv`. Instead it checks
+the format stamp, the version and the promised columns, and raises
+`ContractError` rather than returning something plausible. The reasoning:
+a wrong number that stops the script costs an hour, and a wrong number that
+does not costs a publication correction.
+
+The version check is deliberately asymmetric. Older versions are read; newer
+ones refuse. A newer export may have renamed a column or changed a meaning,
+and this package has no way to know which.
+
+## Result objects rather than tuples
+
+`chisq()`, `mds()`, `cluster()` and `ca()` return dataclasses. This is partly
+readability, but mostly so that a caveat can travel with the result:
+`expected_ok` sits next to the p-value, `goodness` next to the coordinates,
+`cophenetic` next to the tree, `inertia_share` next to the map. A tuple
+invites unpacking only the first element.
+
+## Why gamma is its own module
+
+`gamma.py` is the only place in the package with an exact combinatorial
+search. Finding the best alignment is a set-partitioning problem, NP-hard for
+three or more coders, and the implementation is a branch and bound with a
+pruning rule and an admissible bound rather than a call to a solver. Keeping
+it apart from `unitizing.py` means the cheap measures stay cheap to read, and
+the one function with a search budget is obvious.
+
+That budget is deliberate. When the search would exceed it the result is
+`nan` with a reason, never the best incumbent found so far. A gamma produced
+by a heuristic is not gamma, and a number that is sometimes exact and
+sometimes approximate is worse than no number.
+
+## What is deliberately absent
+
+* **No writing.** Nothing here modifies a Zotero library or an export. Coding
+  happens in the plugin.
+* **No caching of parsed files.** Exports are small and re-reading is cheap;
+  a cache would only create a way for the data to go stale mid-session.
+* **No plotting defaults beyond a theme.** Colours and labels are arguments,
+  because a figure in a paper has to match the rest of the paper.
+* **No copyleft dependencies.** Everything qdaPy pulls in is BSD, MIT or PSF,
+  so nobody inherits an obligation beyond the AGPL itself, see
+  [design decisions](design.qmd).
