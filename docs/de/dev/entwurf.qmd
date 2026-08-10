@@ -1,0 +1,106 @@
+---
+title: "Entwurfsentscheidungen"
+---
+
+
+Jede davon hätte mit gutem Grund auch anders ausfallen können. Sie stehen hier,
+weil die Begründung der Teil ist, der verloren geht — und weil, wer den Code
+ändert, wissen sollte, welche Entscheidungen tragend sind.
+
+## Abbruch bei unbekannter Version
+
+**Entschieden:** eine neuere Austauschversion ablehnen, ältere lesen.
+
+Die Alternative wäre, zu lesen, was geht, und den Rest zu übergehen. Das
+funktioniert bis zu jener Fassung, in der eine Spalte ihre Bedeutung statt
+ihres Namens ändert — und dann erzeugt es Zahlen, die in Ordnung aussehen. Weil
+diese Zahlen in Veröffentlichungen landen, muss der Fehlerfall laut sein.
+
+## Unkodierte Segmente kommen nur auf Verlangen hinein
+
+**Entschieden:** `units()` nimmt Segmente, die niemand kodiert hat, nur auf,
+wenn die aufrufende Person den `uncoded`-Export übergibt.
+
+Sie stillschweigend einzuschließen wäre vertretbar — es ist meist die
+methodisch richtige Wahl —, aber es hieße auch, dass derselbe Aufruf
+unterschiedliche Koeffizienten liefert, je nachdem, welche Dateien gerade zur
+Hand sind. Die zweite Datei zu verlangen macht die Entscheidung im Code
+sichtbar, und dort kann eine Gutachterin sie sehen.
+
+## Mehrfachkodierung wird beiseitegelegt und gezählt
+
+**Entschieden:** Mehrere Codes einer Person auf einem Segment machen diese
+Zelle fehlend; die Anzahl wird als `multi_set_aside` berichtet.
+
+Drei Alternativen wurden erwogen: den ersten Code nehmen (willkürlich), die
+Menge als eine zusammengesetzte Kategorie behandeln (erfindet Kategorien, die
+niemand definiert hat), oder gar nichts rechnen (nicht hilfreich).
+Beiseitelegen und zählen ist die einzige Möglichkeit, die weder Daten erfindet
+noch verbirgt, wie viel weggefallen ist. Die binäre Sicht je Code gibt es für
+Projekte, in denen Mehrfachkodierung die Regel ist.
+
+## Trägheitsanteil bezogen auf die ganze Tabelle
+
+**Entschieden:** `ca().inertia_share` teilt durch die Gesamtträgheit, nicht
+durch die behaltenen Dimensionen.
+
+Auf die behaltenen Dimensionen zu normieren ist verbreitet und summiert sich
+immer zu 100 %, was sich liest wie *diese Karte zeigt alles*. Der R-Zwilling
+hatte diesen Fehler, und der Sprachvergleich hat ihn gefunden. Die Prüfung, die
+das festnagelt: Die Gesamtträgheit muss der Chi-Quadrat-Statistik geteilt durch
+*n* entsprechen.
+
+## Monte Carlo statt exakt bei großen Tabellen
+
+**Entschieden:** Fisher exakt nur bei Vierfeldertafeln; darüber hinaus ein
+permutationsbasierter Monte-Carlo-Test mit festen Randverteilungen, gesät.
+
+Der exakte Test für eine r-mal-c-Tabelle ist nur bei kleinen Häufigkeiten
+machbar. Sechs Codes über fünf Dokumente mit ein paar hundert Kodierungen
+erschöpfen schon den Arbeitsspeicher einer üblichen Umsetzung; der R-Zwilling
+brach genau daran ab. Nicht die Tabellenmaße sagen den Aufwand voraus, sondern
+die Häufigkeiten. Also geht alles jenseits von 2×2 in die Simulation, und die
+Saat macht den berichteten p-Wert reproduzierbar.
+
+## Name der Distribution
+
+**Entschieden:** Die Distribution heißt `qdaPy`, von PyPI zu `qdapy`
+normalisiert, was zugleich der Importname ist.
+
+Eine frühere Fassung hieß `qda-p` mit dem Importnamen `qdap`, weil `qdap` auf
+PyPI von einem unverwandten Projekt belegt war. `qdapy` stellte sich als frei
+heraus, und `Py` ist ohnehin die übliche Endung — also fiel der Bindestrich
+weg.
+
+## Keine GPL-Abhängigkeiten
+
+**Entschieden:** die Abhängigkeiten permissiv halten (BSD, MIT, PSF).
+
+Eine Copyleft-Abhängigkeit bindet alle nachgelagert, die Hürde für eine neue
+ist deshalb hoch. Die Korrespondenzanalyse wird hier aus einer
+Singulärwertzerlegung gerechnet, statt eine GPL-Bibliothek hereinzuholen — was
+sie zugleich unabhängig von der `MASS`-Abhängigkeit des R-Zwillings macht, so
+dass die beiden Umsetzungen einander prüfen, statt sich einen Codepfad zu
+teilen.
+
+Eine Abhängigkeit hinzuzunehmen ist damit ebenso eine Lizenz- wie eine
+technische Entscheidung.
+
+## Eine Funktion je Gleichung
+
+`unitizing_alpha` war einmal eine lange Funktion. Es sind jetzt vier, und die
+Aufteilung folgt der Arbeit statt einer Zeilenzahl: `_pair_disorder` ist
+Gleichung (16) für ein Kodierendenpaar, `_observed_disorder` ist (17), die
+über die Paare summiert, `_expected_disorder` ist (18), und `unitizing_alpha`
+fügt sie zu (19) zusammen.
+
+**Dieselbe Aufteilung gibt es in qdaR und in qdaZ' `stats.js`**, mit denselben
+Grenzen und passenden Namen. Genau darum geht es: Die drei lassen sich weiterhin
+nebeneinander gegen Krippendorff lesen, und das ist die einzige praktikable Art
+zu prüfen, ob drei Sprachen eine Formel umsetzen. Nur eine von ihnen
+aufzuteilen hätte eine Metrik erkauft und das gekostet, was die Metrik schützen
+sollte.
+
+Vorher wie nachher wurden die Umsetzungen über dieselben achtzig zufälligen
+Konfigurationen in allen drei Sprachen gerechnet und verglichen: identisch bis
+aufs letzte Bit.

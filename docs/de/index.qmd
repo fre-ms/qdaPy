@@ -1,0 +1,85 @@
+---
+title: "qdaPy"
+---
+
+
+Sie haben Material in Zotero mit [zotQDA](https://zotqda.org) kodiert und
+möchten nun etwas damit tun, was das qdaZ-Plugin nicht anbietet: mehrere Exporte
+zusammenführen, eine Abbildung in ein Manuskript setzen, einen statistischen Test rechnen,
+den qdaZ bewusst auslässt, oder die ganze Auswertung schlicht in einem reproduzierbaren
+Skript behalten, das nächstes Jahr noch läuft. Dafür ist qdaPy da.
+
+qdaPy ist in erster Linie die python-basierte Auswertungshälfte des **zotQDA-Ökosystems**:
+Es liest die CSV-Tabellen, die zotQDA exportiert, und damit steht sein
+voller Umfang bereit.
+
+qdaPy liest aber auch **REFI-QDA**-Projekte ein. Eine Studie in
+MAXQDA, ATLAS.ti, NVivo, QDA Miner oder Dedoose kann so um die Kennzahlen
+und Abbildungen erweitert werden, die jene Programme (noch) nicht anbieten:
+Konfidenzintervalle zur Übereinstimmung, die Maße für die Segmentierung,
+Sättigung als berichtbare Zahl, Fallzahlplanung.
+Eine `.qdpx` trägt im Vergleich zu den CSV-Tabellen, die zotQDA exportiert, nur eine
+Teilmenge. [Eine .qdpx lesen](guide/qdpx.qmd) legt beides dar — die Teilmenge
+und den Gewinn an Funktionalität durch qdaPy je Programm.
+
+::: {.callout-warning title="Frühe öffentliche Beta"}
+
+qdaPy steht in einer **frühen öffentlichen Beta**. Es ist veröffentlicht,
+installierbar und dokumentiert — und es ist nicht fertig:
+
+- **Es wird Fehler geben.**
+- **Schnittstellen werden sich zwischen zwei Fassungen sehr wahrscheinlich
+  ändern**, weil noch umgebaut wird.
+- **Für die Richtigkeit der Ergebnisse kann nicht garantiert werden.**
+
+Prüfen Sie nach, worauf Sie sich stützen, und nageln Sie in Arbeiten, die
+reproduzierbar sein müssen, eine Version fest. Hinweise auf Fehler oder auf
+Dinge, die Ihnen im Weg stehen, sind willkommen.
+
+Der R-Zwilling [qdaR](https://qdar.zotqda.org) steht auf derselben Stufe;
+die beiden Zotero-Plugins sind einen Schritt dahinter, in einer privaten
+Alpha.
+:::
+
+```sh
+pip install qdaPy          # pandas, scipy, plotnine, seaborn
+pip install "qdaPy[vega]"  # dazu altair, für die Grafiken des Plugins selbst
+```
+
+Die Distribution heißt `qdaPy`; PyPI normalisiert das zu `qdapy`, und so lautet
+auch der Importname.
+
+```python
+import qdapy
+
+frag = qdapy.read_fragments("zotqda-fragments.csv")
+qdapy.code_counts(frag)
+qdapy.gg.frequencies(frag)
+```
+
+## Wie es weitergeht
+
+| Wenn Sie … möchten | Lesen Sie |
+|---|---|
+| einen Export laden und wissen, dass er unversehrt ankam | [Exporte lesen](guide/lesen.qmd) |
+| es **ohne zotQDA** nutzen, aus einem MAXQDA- oder ATLAS.ti-Export | [Eine .qdpx lesen](guide/qdpx.qmd) |
+| die Abbildungen des Plugins zeichnen — oder eigene | [Abbildungen](guide/abbildungen.qmd) |
+| berichten, wie gut Ihre Kodierenden übereinstimmten | [Übereinstimmung](guide/uebereinstimmung.qmd) |
+| herausfinden, warum ein Kappa niedrig ausfiel | [Reliabilität](guide/reliabilitaet.qmd) |
+| prüfen, ob die Kodierenden dieselben Stellen markiert haben | [Unitizing](guide/unitizing.qmd) |
+| einen Test rechnen, den das Plugin nicht anbietet | [Statistik](guide/statistik.qmd) |
+| vor der Erhebung abschätzen, wie viel Material Sie brauchen | [Studien planen](guide/planung.qmd) |
+| COREQ oder SRQR für eine Einreichung ausfüllen | [Berichts-Checklisten](guide/berichte.qmd) |
+| eine Umbenennung im Codesystem überstehen | [Code-Identität](guide/code-identitaet.qmd) |
+| das Paket verändern oder portieren | [Für Entwickler](dev/architektur.qmd) |
+| die vollständige Liste dessen sehen, was drin ist | [Funktionen](funktionen.qmd) |
+| das Ganze gegen MAXQDA oder ATLAS.ti abwägen | [Vergleich mit anderer Software](vergleich.qmd) |
+
+## Was qdaPy nicht tut
+
+qdaPy kodiert nichts und schreibt niemals nach Zotero zurück. Kodiert wird in
+zotQDA; qdaPy liest ausschließlich, was zotQDA exportiert hat, analysiert es statistisch
+und illustriert die Daten.
+
+Weicht ein Ergebnis in qdaPy von dem im qdaZ-Plugin ab, ist das ein Fehler, den zu melden sich lohnt,
+und keine Ansichtssache. Die beiden Bibliotheken werden gegeneinander an gemeinsamen Prüfdaten getestet.

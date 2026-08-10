@@ -1,0 +1,45 @@
+---
+title: "Lizenz"
+---
+
+
+**AGPL-3.0-or-later**, dieselben Bedingungen wie bei zotQDA, qdaZ und dem
+R-Zwilling qdaR. Der vollständige Text steht in `LICENSE`.
+
+## Was Sie mit qdaPy erarbeiten, gehört Ihnen
+
+Abbildungen, Tabellen, Koeffizienten, Berichte, die Auswertungsskripte, die Sie
+geschrieben haben: Die Lizenz knüpft daran keinerlei Bedingung. Das ist
+ausdrücklich als zusätzliche Erlaubnis nach Abschnitt 7 der AGPL eingeräumt, in
+`LICENSE-EXCEPTION.md`.
+
+Streng genommen ändert die Klausel nichts — eine Copyleft-Lizenz hat noch nie
+in die Ausgabe eines Programms hineingereicht, und die Free Software Foundation
+sagt das in ihren eigenen häufigen Fragen. Aber der gegenteilige Glaube hält
+sich hartnäckig genug, um eine Ethikkommission oder eine Rechtsabteilung ins
+Zögern zu bringen, und eine Abbildung in einem eingereichten Manuskript ist
+nicht der Ort für eine Lizenzfrage. Also steht es geschrieben.
+
+Die Erlaubnis erfasst auch die Teile des Pakets, die zwangsläufig in Ihrer
+Ausgabe landen: Achsenbeschriftungen, Formulierungen von Bildunterschriften,
+die voreingestellte Farbpalette, Spaltennamen zurückgegebener Tabellen,
+Meldungstexte.
+
+## Kommerzielle Nutzung braucht keine kommerzielle Lizenz
+
+Das ist das häufigste Missverständnis über die AGPL. Sie dürfen qdaPy im
+Unternehmen einsetzen, in bezahlter Beratung, in Auftragsforschung und in
+Arbeit, für die Sie bezahlt werden — ohne jemanden zu fragen und ohne etwas zu
+zahlen.
+
+Was die AGPL verlangt, ist dies: Wenn Sie eine *veränderte Fassung* weitergeben
+oder andere sie über ein Netz nutzen lassen, geben Sie den Quelltext unter
+denselben Bedingungen mit. Das ist die einzige Bedingung, und sie gilt für
+alle: qdaPy wird **nicht** doppelt lizenziert, und es gibt keine proprietäre
+Ausnahme zu kaufen.
+
+## Beiträge
+
+Nichts zu unterschreiben. Es gibt keine Mitwirkendenvereinbarung, weil es keine
+zweite Lizenz gibt, für die man eine bräuchte. Sie tragen unter der AGPL bei
+und behalten Ihr Urheberrecht.

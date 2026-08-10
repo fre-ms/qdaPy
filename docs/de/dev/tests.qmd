@@ -1,0 +1,151 @@
+---
+title: "Tests"
+---
+
+
+447 Tests, die alle ohne Zotero-Installation und ohne Netzverbindung laufen.
+
+```sh
+uv sync --extra vega --group dev
+uv run pytest
+uv run ruff check src tests scripts
+uv run mypy
+```
+
+## Fortlaufende Integration
+
+`.github/workflows/ci.yml` lässt die Suite auf jeder Python-Version laufen, die
+die Klassifizierer beanspruchen — 3.11 bis 3.14 unter Linux, dazu 3.13 unter
+macOS, weil der Grafikteil sich am ehesten zwischen Plattformen unterscheidet.
+Eine Version, die in den Metadaten steht und nie ausgeführt wird, ist eine
+Behauptung, keine Tatsache.
+
+Vier weitere Aufgaben: `ruff`, `mypy` und ein Doku-Bau; der
+Qualitäts-Schnappschuss gegen seine mitversionierte Grundlinie; Wheel und sdist
+durch `twine check`; und die unten beschriebene sprachübergreifende
+Kongruenzprüfung.
+
+::: {.callout-warning title="Drei Tests werden in einem gewöhnlichen Checkout übersprungen"}
+
+Die Vergleiche, die behaupten, eine eingefrorene Referenz sei byteidentisch
+zur Kopie in qdaR, brauchen das R-Paket **neben** diesem auf der Platte. In
+einem nackten Klon werden sie übersprungen — und ein übersprungener Test
+beweist nichts, während er aussieht, als sei er durchgelaufen.
+
+Die Aufgabe `congruence` checkt deshalb beide Repositorien nebeneinander
+aus, führt jene Tests aus und **scheitert, wenn einer trotzdem
+übersprungen wird** — als Schutz gegen den Tag, an dem jemand die
+Referenzdatei verschiebt und aus dem Überspringen klammheimlich ein
+Dauerzustand wird. Eingeschaltet wird sie über die Repository-Variable
+`QDAR_PUBLISHED`; sie bleibt also aus, bis das R-Paket ein öffentliches
+Repositorium zum Auschecken hat, statt aus einem Grund zu scheitern, der
+kein Mangel ist.
+
+Lokal finden die Tests qdaR immer dann, wenn beide Pakete im selben
+Elternverzeichnis liegen — so ist der Entwicklungsbaum aufgebaut.
+:::
+
+## Wozu die Suite eigentlich da ist
+
+Das meiste ist gewöhnlich: Leser weisen fehlerhafte Dateien ab, Koeffizienten
+stimmen mit Handrechnungen überein, Abbildungen bauen. Zwei Teile sind
+ungewöhnlich, und sie sind der Grund, warum den Zahlen hier zu trauen ist.
+
+### Kongruenz mit dem Plugin
+
+`tests/qdaz-reference.json` enthält 109 zufällig erzeugte Kodierermatrizen, mit
+zwei bis vier Kodierenden, absichtlich schiefen Randverteilungen und fehlenden
+Urteilen, dazu die Werte, die das JavaScript des Plugins dafür rechnet.
+`test_congruence.py` rechnet alle sechs Koeffizienten nach und vergleicht auf
+zwölf Nachkommastellen.
+
+Diese Datei ist byteidentisch zu der im R-Paket, und ein Test behauptet genau
+das. Damit werden drei Umsetzungen in drei Sprachen an *einer* Referenz
+gemessen und nicht aneinander.
+
+Sich über ein handverlesenes Beispiel einig zu sein beweist sehr wenig. Die
+Prüfdaten wurden gerade deshalb zufällig erzeugt, damit sie niemand so gewählt
+hat, dass die Umsetzungen übereinstimmen.
+
+### Kongruenz mit dem R-Zwilling bei der Statistik
+
+`tests/stats-reference.json` enthält, was qdaR für `tests/stats-fixture.csv`
+rechnet — 256 Kodierungen über sechs Codes, fünf Dokumente und zwei
+Kodierende, mit erwarteten Häufigkeiten, die klein genug sind, um den Zweig des
+exakten Tests zu erzwingen. `test_stats.py` reproduziert die
+Chi-Quadrat-Statistik, Cramérs V, die Jaccard-Matrix, die kophenetische
+Korrelation, die Skalierungsdistanzen und die Trägheiten der
+Korrespondenzanalyse.
+
+Die beiden Pakete rechnen das alles über gänzlich verschiedene Bibliotheken —
+R mit `chisq.test`, `cmdscale`, `hclust` und `MASS::corresp`, hier scipy und
+handgeschriebene lineare Algebra. Übereinstimmung auf zwölf Stellen ist
+deshalb ein Beleg über die Statistik und nicht über geteilten Code.
+
+Zwei der Vergleiche können nicht wörtlich sein. Skalierungskoordinaten und
+Korrespondenz-Scores sind nur bis auf Vorzeichen und Drehung bestimmt;
+verglichen werden deshalb die paarweisen Distanzen zwischen den Punkten, die
+gegen beides unempfindlich sind. Der Monte-Carlo-p-Wert ist auf beiden Seiten
+konstruktionsbedingt zufällig und muss nur nahe genug liegen.
+
+### Kongruenz bei den neueren Maßen
+
+Zwei weitere eingefrorene Referenzen arbeiten genauso.
+`qdaz-e35-reference.json` deckt das Unitizing-Alpha, WindowDiff, Pk, die
+Sättigungskennzahl und das Wilson-Intervall ab; `qdaz-gamma-reference.json`
+deckt Gamma ab. Beide wurden vom JavaScript des Plugins auf zufällig erzeugten
+Daten gerechnet und sind byteidentisch zu den Kopien im Schwesterpaket, was ein
+Test behauptet.
+
+Einige dieser Zahlen wurden zudem gegen die Arbeiten selbst geprüft und nicht
+nur gegeneinander. Das Unitizing-Alpha reproduziert die beobachtete Uneinigkeit
+von 7,8 aus Krippendorffs eigenem durchgerechnetem Beispiel; die
+Fallzahlfunktionen reproduzieren Donner und Rotondis Tabelle 2 in allen
+achtundvierzig Zellen und Fugard und Potts’ Tabelle 1 Zelle für Zelle; Gamma
+reproduziert die drei Konfigurationen aus Abbildung 11 von Mathet und Kollegen,
+einschließlich des negativen Werts für Kodierende, die schlechter abschneiden
+als der Zufall.
+
+Diese Kombination ist entscheidend. Übereinstimmung zwischen drei Umsetzungen
+beweist, dass sie konsistent sind; Übereinstimmung mit einer veröffentlichten
+Tabelle beweist, dass sie recht haben.
+
+## Eine Referenz neu erzeugen
+
+Tun Sie das nur, wenn sich ein Koeffizient auf einer Seite berechtigterweise
+geändert hat, niemals um einen scheiternden Test durchzubekommen.
+
+Erzeugen Sie die Prüfdaten einmal, in der Sprache, die gerade bequem ist.
+Geben Sie sie an `src/stats.js` des Plugins unter Node — das braucht ein
+`global.QdaZ = {}` und ein `eval` der Datei — und an dieses Paket. Dann
+vergleichen und **jede einzelne** Abweichung klären, bevor es weitergeht: Eine
+Referenz, die eingefroren wird, während zwei Umsetzungen uneins sind, ist
+schlechter als gar keine. Erst danach das neue JSON schreiben, in **beide**
+Pakete, im selben Commit.
+
+Achten Sie bei der Auswahl der einzufrierenden Prüfdaten darauf, dass sie jede
+Kodierendenzahl **und** Matrizen mit fehlenden Urteilen abdeckt. Eine
+regelmäßige Schrittweite wie `seq(1, n, by = 4)` traf einmal ausgerechnet jede
+Lücke nicht, und der Abdeckungstest in `test_congruence.py` existiert, um genau
+das zu fangen.
+
+## Prüfen, dass ein Test scheitern kann
+
+Ein Test, der nie gescheitert ist, ist eine Behauptung und keine Prüfung. Beide
+Kongruenztests wurden durch Mutation überprüft: Stört man den gepoolten
+Zufallsterm in `fleiss()` um ein Millionstel, scheitern 108 von 112 Fällen. Wer
+diese Rechnungen anfasst, sollte dasselbe tun, bevor er dem grünen Haken traut.
+
+## Gegen die gebaute Distribution testen
+
+Dass es im Quellbaum durchläuft, beweist nicht, dass sich die Referenzdateien
+aus einem installierten Paket auflösen lassen:
+
+```sh
+python -m build
+pip install "dist/qdapy-0.1.0-py3-none-any.whl[vega]"
+cd /tmp && python -m pytest <pfad>/tests
+```
+
+Sowohl die `importlib.resources`-Auflösungen als auch die Pfade von
+`qdapy.example()` werden nur so richtig durchlaufen.

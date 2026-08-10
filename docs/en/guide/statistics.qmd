@@ -1,0 +1,85 @@
+---
+title: "Statistics"
+---
+
+
+The plugin stops at description. It will count and cross-tabulate, but it will
+never hand you a p-value. That is on purpose. Put a significance test in front
+of most qualitative material and it invites a claim the design cannot carry,
+usually because the material was never sampled in a way that would license one.
+
+Some designs do license it, though, and for those this page exists. Note the
+asymmetry: the plugin decides not to test, and you decide to. Nothing here runs
+unless you call it.
+
+## Are codes distributed independently of something?
+
+```python
+res = qdapy.chisq(frag, "citekey")
+res.statistic, res.cramers_v, res.p_value
+res.expected_ok
+res.test
+```
+
+Read `cramers_v` first. It says how strong the association is, which is the
+question you actually had; the p-value only says whether it would be surprising
+under independence.
+
+`expected_ok` is the other thing to look at. Chi-squared leans on an
+approximation that falls apart once expected counts drop below about five, and
+code-by-document tables get sparse quickly. When that happens the function
+switches by itself. Fisher's exact test on a two-by-two table, otherwise a
+Monte Carlo p-value with the margins held fixed. `res.test` says which one you
+were given, and the Monte Carlo variant is seeded, so a number you publish can
+be reproduced.
+
+::: {.callout-warning title="What the unit of this test is"}
+
+One coded fragment. Fragments from the same document are not independent
+observations, so a significant result across documents is weaker evidence
+than the p-value suggests. Nothing in the code can fix that for you.
+:::
+
+## Which codes travel together?
+
+```python
+d = qdapy.code_distance(frag, min_n=3)      # Jaccard distances
+qdapy.mds(frag).points                      # a two-dimensional map
+qdapy.gg.mds(frag)
+```
+
+Two codes are close when they sit on the same segments. `min_n` drops codes
+used fewer than that many times, with two or three uses, every coefficient is
+noise. `mds()` also returns `goodness`, the share of eigenvalue mass the two
+dimensions carry; a map showing 30 % looks exactly like one showing 95 %.
+
+```python
+cl = qdapy.cluster(frag, min_n=3)
+cl.cophenetic
+cl.flat(3)
+qdapy.sns.dendrogram(frag, min_n=3)
+```
+
+`cophenetic` is the correlation between the distances and the tree. Below
+roughly 0.7 the dendrogram is drawing structure the distances do not support,
+which is worth knowing, because a dendrogram always looks convincing. With
+fewer than three codes it is undefined and reported as `nan` rather than as a
+number that means nothing.
+
+## Which codes and documents attract each other?
+
+```python
+ca = qdapy.ca(frag)
+ca.inertia_share
+ca.total_inertia
+qdapy.gg.ca_map(frag)
+```
+
+`inertia_share` is relative to the whole table, not to the dimensions you kept
+— so keeping two of four dimensions gives you something well below 1, which is
+the honest answer to how much of the picture you are seeing. Shares normalised
+to the retained dimensions always sum to 100 % and answer a question nobody
+asked. As a sanity check, `total_inertia` equals the chi-squared statistic
+divided by *n*, and the test suite verifies it.
+
+Sources for all of the above are on the [literature page](../dev/literature.qmd).

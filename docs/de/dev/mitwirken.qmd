@@ -1,0 +1,64 @@
+---
+title: "Mitwirken"
+---
+
+
+Beiträge sind willkommen. Ein paar Dinge lohnt es zu wissen, bevor Sie Code
+schreiben.
+
+## Die Lizenzfrage zuerst
+
+Das Paket steht unter AGPL-3.0-or-later, und das ist die ganze Geschichte. Es
+gibt keine Mitwirkendenvereinbarung zu unterschreiben und keine Rechte
+abzutreten: Sie tragen unter der AGPL bei, Sie behalten Ihr Urheberrecht, und
+die Betreuung erhält an Ihrer Arbeit keine Rechte, die nicht jede andere
+Nutzerin auch hat.
+
+Falls Ihnen das nicht passt, sagen Sie es früh — ein nicht zusammenführbarer
+Patch ist Verschwendung Ihrer Zeit, nicht nur unserer.
+
+**Eine neue Abhängigkeit ist weiterhin eine Lizenzentscheidung.** Alle
+derzeitigen Abhängigkeiten sind BSD, MIT oder PSF; wer qdaPy einbettet, erbt
+also nichts über die AGPL hinaus. Ein Copyleft-Paket in `pyproject.toml` bände
+alle nachgelagert — sprechen Sie es an, bevor Sie den Code schreiben, der es
+braucht.
+
+## Wie eine gute Änderung aussieht
+
+* **Ein Test, der zuerst scheitert.** Besonders bei einer numerischen
+  Korrektur: Zeigen Sie die falsche Zahl, bevor Sie die richtige zeigen.
+* **Eine Notiz zur Begründung, nicht zur Änderung.** Kommentare, die sagen, was
+  der Code tut, sind Rauschen; Kommentare, die sagen, welcher Zwang ihn nötig
+  gemacht hat, überdauern.
+* **Dieselbe Abbildung in jedem Backend.** Eine neue Abbildung gehört in `gg`
+  und `sns` und zieht aus einer neuen Funktion in `frames`.
+* **`ruff check .` sauber.** Die Konfiguration steht in `pyproject.toml`; vier
+  pandas-Regeln sind abgeschaltet, mit den Gründen daneben.
+
+## Was abgelehnt wird
+
+* Alles, was in eine Zotero-Bibliothek schreibt. Kodieren gehört ins Plugin.
+* Eine Voreinstellung, die einen Koeffizienten besser aussehen lässt: ein
+  automatisches Zusammenführen von `uncoded`, ein Kappa, das mehrfach kodierte
+  Segmente stillschweigend übergeht, ein Trägheitsanteil, der auf die
+  behaltenen Dimensionen normiert ist.
+* Statistik ohne beigefügten Vorbehalt. Wo eine Zahl zur Überinterpretation
+  einlädt, muss das Ergebnisobjekt mittragen, was davor warnt.
+* Umformatierung, die in eine Verhaltensänderung eingemischt ist — das macht
+  beides unprüfbar.
+
+## Wenn Sie einen Koeffizienten ändern
+
+Fangen Sie bei den [Tests](tests.qmd) an. Zwei eingefrorene Referenzen müssen
+gemeinsam neu erzeugt werden, in beiden Paketen, und die Mutationsprüfung
+danach wiederholt. Das, was dieses Projekt zu verhindern gebaut ist, ist genau
+das: ein Koeffizient, der sich in einer Sprache bewegt und in den beiden
+anderen stehen bleibt.
+
+## Eine Abweichung vom Plugin melden
+
+Eine Zahl, die von der des Plugins abweicht, heißt, dass eine der beiden falsch
+ist — und das ist so oder so einen Bericht wert. Hängen Sie den Export an, bei
+dem es passiert ist, oder eine Kodierermatrix, die klein genug ist, um es
+nachzustellen; die Ausgabe von `agreement.agreement()` von beiden Seiten
+genügt meist, um zu erkennen, welche Seite danebenliegt.

@@ -1,0 +1,142 @@
+---
+title: "Testing"
+---
+
+
+447 tests, all of which run without a Zotero installation and without network
+access.
+
+```sh
+uv sync --extra vega --group dev
+uv run pytest
+uv run ruff check src tests scripts
+uv run mypy
+```
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs the suite on every Python version the
+classifiers claim — 3.11 through 3.14 on Linux, plus 3.13 on macOS, because
+the plotting stack is the part most likely to differ between platforms. A
+version listed in the metadata but never exercised is a claim, not a fact.
+
+Four further jobs: `ruff` and `mypy` and a documentation build; the quality
+snapshot against its committed baseline; a wheel and sdist through
+`twine check`; and the cross-language congruence job described below.
+
+::: {.callout-warning title="Three tests skip in an ordinary checkout"}
+
+The comparisons that assert a frozen reference is byte-identical to the
+copy in qdaR need the R package **beside** this one on disk. In a bare
+clone they skip, and a skipped test proves nothing while looking like it
+passed.
+
+The `congruence` job therefore checks out both repositories side by side,
+runs those tests, and **fails if any of them skips anyway** — a guard
+against the day someone moves the reference file and the skip silently
+becomes permanent. It is switched on by the repository variable
+`QDAR_PUBLISHED`, so it stays off until the R package has a public
+repository to check out rather than failing for a reason that is not a
+defect.
+
+Locally the tests find qdaR whenever the two packages sit in the same
+parent directory, which is how the development tree is laid out.
+:::
+
+## What the suite is actually for
+
+Most of it is ordinary: readers reject malformed files, coefficients match
+hand computations, figures build. Two parts are unusual and are the reason the
+numbers here can be trusted.
+
+### Congruence with the plugin
+
+`tests/qdaz-reference.json` holds 109 randomly generated coder matrices, two
+to four coders, deliberately skewed marginals, missing ratings, together with
+the values the plugin's JavaScript computes for them. `test_congruence.py`
+recomputes all six coefficients and compares to twelve decimal places.
+
+That file is byte-identical to the one in the R package, and one test asserts
+exactly that. So three implementations in three languages are held to a single
+reference rather than to each other.
+
+Agreeing on a hand-picked example proves very little. The fixtures were
+generated at random precisely so that no one chose them to make the
+implementations agree.
+
+### Congruence with the R twin on the statistics
+
+`tests/stats-reference.json` holds what qdaR computes for
+`tests/stats-fixture.csv` — 256 codings over six codes, five documents and two
+coders, with expected counts small enough to force the exact-test branch.
+`test_stats.py` reproduces the chi-squared statistic, Cramér's V, the Jaccard
+matrix, the cophenetic correlation, the scaling distances and the
+correspondence-analysis inertias.
+
+The two packages compute all of this through entirely different libraries —
+R's `chisq.test`, `cmdscale`, `hclust` and `MASS::corresp` against scipy and
+hand-written linear algebra, so agreement to twelve decimals is evidence
+about the statistics, not about shared code.
+
+Two of the comparisons cannot be literal. Scaling coordinates and
+correspondence scores are defined only up to sign and rotation, so what gets
+compared is the pairwise distances between points, which are invariant under
+both. The Monte Carlo p-value is random by construction on either side, so it
+only has to land close.
+
+### Congruence on the newer measures
+
+Two further frozen references work the same way. `qdaz-e35-reference.json`
+covers the unitizing alpha, WindowDiff, Pk, the saturation ratio and the
+Wilson interval; `qdaz-gamma-reference.json` covers gamma. Both were computed
+by the plugin's JavaScript on randomly generated data and are byte-identical
+to the copies in the sibling package, which a test asserts.
+
+Some of these numbers were also checked against the papers themselves rather
+than only against each other. The unitizing alpha reproduces the observed
+disagreement of 7.8 from Krippendorff's own worked example; the sample-size
+functions reproduce Donner and Rotondi's Table 2 in all forty-eight cells and
+Fugard and Potts' Table 1 cell for cell; gamma reproduces the three
+configurations of Mathet and colleagues' Figure 11, including the negative
+value for coders who do worse than chance.
+
+That combination matters. Agreement between three implementations proves they
+are consistent; agreement with a published table proves they are right.
+
+## Regenerating a reference
+
+Do this only when a coefficient has legitimately changed on one side, never to
+make a failing test pass.
+
+Generate the fixtures once, in whichever language is convenient. Feed them to
+the plugin's `src/stats.js` under Node, which takes a `global.QdaZ = {}` and an
+`eval` of the file, and to this package. Then compare, and resolve every single
+difference before going any further; a reference frozen while two
+implementations disagree is worse than no reference. Only then write the new
+JSON, into **both** packages, in the same commit.
+
+When picking which fixtures to freeze, make sure the selection covers every
+coder count **and** matrices with missing ratings. A regular stride such as
+`seq(1, n, by = 4)` once happened to miss every single gap, and the coverage
+test in `test_congruence.py` exists to catch exactly that.
+
+## Verifying that a test can fail
+
+A test that has never failed is a claim, not a check. Both congruence tests
+were verified by mutation: perturbing the pooled chance term in `fleiss()` by
+one part in a million makes 108 of 112 cases fail. If you touch these
+computations, do the same before trusting the green tick.
+
+## Testing against the built distribution
+
+Passing in the source tree does not prove the reference files resolve from an
+installed package:
+
+```sh
+python -m build
+pip install "dist/qdapy-0.1.0-py3-none-any.whl[vega]"
+cd /tmp && python -m pytest <path>/tests
+```
+
+Both `importlib.resources` lookups and the `qdapy.example()` paths only get
+exercised properly this way.

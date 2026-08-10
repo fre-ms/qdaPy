@@ -1,0 +1,123 @@
+---
+title: "Abbildungen"
+---
+
+## Ein Satz Tabellen, drei Arten sie zu zeichnen
+
+Alle drei Backends holen ihre Zahlen aus derselben Quelle, `qdapy.frames`. Das
+eine gegen das andere zu tauschen ändert deshalb, wie eine Abbildung
+aussieht, und nie, was sie sagt. Sie können in seaborn anfangen und mitten
+in einem Aufsatz zu plotnine wechseln, ohne die Werte erneut prüfen zu
+müssen.
+
+Alles auf dieser Seite ist *lebendig*: Der Code wird beim Bauen der
+Dokumentation ausgeführt, die Abbildungen sind seine tatsächliche Ausgabe.
+Das Material ist [die Beispielstudie](beispieldaten.qmd), die das Paket
+mitliefert: eine synthetische Studie zur Arbeitsbelastung in der Pflege,
+neun Codes in drei Themen, acht Interviews aus zwei Bereichen, von zwei
+Personen kodiert:
+
+```{python}
+import qdapy
+
+frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
+```
+
+Die Korrespondenzanalyse legt Codes **und** Interviews in eine gemeinsame
+Karte, und sie bringt ihren eigenen Vorbehalt mit: Der Anteil der Trägheit,
+den die zwei Dimensionen zeigen, steht in der Abbildung selbst — denn eine
+Karte ohne diese Angabe wirkt bei 30 % genauso vertrauenswürdig wie bei 90 %:
+
+```{python}
+#| label: fig-ca
+#| fig-cap: "Codes und Dokumente in einer Korrespondenzanalyse-Karte. Die beiden Bereiche trennen sich entlang Dimension 1, jeweils umgeben von ihren typischen Codes. Die Abbildung sagt selbst, wie viel der Struktur sie zeigt."
+qdapy.gg.ca_map(frag)
+```
+
+Welche Codes liegen auf denselben Passagen? Das Dendrogramm gruppiert
+Codes nach Ko-Okkurrenz. Die kophenetische Korrelation in seinem Titel
+sagt, wie treu der Baum die Distanzen bewahrt:
+
+```{python}
+#| label: fig-dendro
+#| fig-cap: "Codes nach Ko-Okkurrenz gruppiert (Jaccard-Distanz, seaborn-Backend). Die ins Material eingebauten Belastungs-/Bewältigungs-Paare kommen als Cluster wieder heraus."
+qdapy.sns.dendrogram(frag)
+```
+
+Die Code-mal-Dokument-Matrix zeigt dieselbe Struktur als Heatmap. Ein
+Blick genügt, um zu sehen, welche Interviews welche Themen tragen:
+
+```{python}
+#| label: fig-matrix
+#| fig-cap: "Kodierungen je Code und Interview. Die Blockstruktur zwischen den beiden Bereichen ist der Gruppenunterschied, den die Karte oben projiziert."
+qdapy.gg.code_matrix(frag)
+```
+
+| Backend | Import | Gibt zurück | Greifen Sie dazu, wenn |
+|---|---|---|---|
+| plotnine | `qdapy.gg` | ein `ggplot`-Objekt | Sie in der Grammatik der Grafik denken oder die Abbildung zum R-Paket passen soll |
+| seaborn | `qdapy.sns` | eine matplotlib-`Axes` | die Abbildung in ein Layout muss, das Sie schon haben |
+| Vega-Lite | `qdapy.vega` | ein Altair-Diagramm | die Abbildung genau so aussehen muss wie in Zotero |
+
+Die Funktionsnamen decken sich über die Backends hinweg: `frequencies`,
+`code_matrix`, `timeline`, `saturation`, `mds`, `level_agreement`, `ca_map`,
+dazu das `dendrogram`, das es nur in `qdapy.sns` gibt.
+
+## Nichts erscheint von selbst
+
+Keine Funktion hier ruft `plt.show()` auf. Abbildungen erscheinen, wenn Ihr
+Skript es sagt:
+
+```python
+import matplotlib.pyplot as plt
+
+fig, (links, rechts) = plt.subplots(1, 2, figsize=(11, 4))
+qdapy.sns.frequencies(frag, ax=links)
+qdapy.sns.saturation(history, ax=rechts)
+fig.savefig("abbildung-2.pdf")
+```
+
+Weil jede seaborn-Funktion `ax=` annimmt, kann eine dieser Abbildungen als
+einzelnes Teilbild in einem Layout sitzen, das ansonsten ganz Ihres ist.
+
+## Die Zahlen hinter einer Abbildung
+
+Oft ist es die Tabelle, die Sie brauchen, und nicht das Bild — für einen Anhang
+oder weil eine Gutachterin die Häufigkeiten sehen möchte. Dieselben Aufrufe,
+die die Abbildungen speisen, liefern sie direkt:
+
+```{python}
+qdapy.code_counts(frag)
+```
+
+```python
+qdapy.code_matrix(frag, long=False)   # Codes × Dokumente
+qdapy.timeline(history)               # kumulierte Kodierungen je Person
+qdapy.saturation(history)             # verschiedene Codes über die Zeit
+qdapy.mds_points(frag)                # die Skalierungskarte als Punkte
+qdapy.ca_points(frag)                 # Codes und Dokumente in einer Karte
+```
+
+Aus den beiden letzten werden die Kartenabbildungen gezeichnet, und sie tragen
+die Zahl, die in die Bildunterschrift gehört, in `df.attrs`: `goodness` für die
+Skalierung, `inertia_shown` für die Korrespondenzanalyse.
+
+Eines sollten Sie zu `timeline()` wissen: Es zählt `add`-Ereignisse und
+übergeht `remove`. Eine Kodierung, die jemand vergeben und dann zurückgenommen
+hat, ist geschehen. Zu dem, was am Ende dasteht, gehört sie nicht; eine
+Wachstumskurve, die sie weiterzählt, schmeichelt dem Ergebnis.
+
+## Die Grafiken des Plugins selbst
+
+Jede Grafik in qdaZ lässt sich als Paar aus Daten und Spezifikation sichern.
+Das Rendern der Spezifikation stellt die Abbildung genau so wieder her, wie sie
+in Zotero aussah:
+
+```python
+spec = qdapy.vega.read_spec("frequencies.json")
+chart = qdapy.vega.render(spec, qdapy.code_counts(frag))
+```
+
+Dafür braucht es Altair — `pip install "qdaPy[vega]"`. Nehmen Sie es, wenn eine
+Abbildung zum Plugin passen muss; die anderen beiden Backends, wenn sie zum
+Rest Ihres Manuskripts passen muss.

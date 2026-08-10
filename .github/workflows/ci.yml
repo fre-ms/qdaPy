@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A superseded run tells you nothing; cancel it and keep the queue short.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # Every Python version the classifiers in pyproject.toml claim. A claim
+    # nothing tests is a claim, not a fact.
+    name: tests (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          # the maintainer works on macOS, and the plotting stack is the part
+          # most likely to differ between platforms
+          - os: macos-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install the package and its test dependencies
+        # `vega` is an optional extra, but tests/test_plots.py skips its
+        # altair test without it -- and a silent skip is not a test run.
+        run: uv sync --python ${{ matrix.python }} --extra vega --group dev
+
+      - name: Run the suite
+        # -ra lists every skip by name: the three cross-repository checks
+        # cannot run here (see the `congruence` job) and that must stay
+        # visible in the log rather than hiding in a count.
+        run: uv run --no-sync pytest -ra
+
+  lint:
+    name: ruff, mypy, docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --extra vega --group dev
+
+      - name: ruff
+        # includes the C901 complexity gate configured in pyproject.toml
+        run: uv run --no-sync ruff check src tests scripts
+
+      - name: mypy
+        # the package ships py.typed, so its annotations are a promise
+        run: uv run --no-sync mypy
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.9.38"   # keep equal to docs/build.sh's pin
+
+      - name: Build the documentation
+        # Renders the executable pages against this checkout, so a
+        # breaking API change fails here while it is still a pull
+        # request. The offline smoketest proves the built site works
+        # from a plain file tree, which is how the bundled help ships.
+        run: |
+          uv pip install jupyter
+          QUARTO_PYTHON="$(uv run --no-sync python -c 'import sys; print(sys.executable)')" ./docs/build.sh
+          python3 docs/offline/smoketest.py site/en site/de
+        env:
+          QDA_SMOKE_BROWSER: google-chrome
+
+  quality:
+    name: quality snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --extra vega --group dev --group quality
+
+      - name: Compare against the committed baseline
+        # Fails only when a gated number moves the wrong way -- complexity,
+        # lint findings, type errors, undocumented public definitions,
+        # coverage. Absolute thresholds make a poor gate (Nagappan, Ball and
+        # Zeller 2006, doi:10.1145/1134285.1134349); this compares the
+        # project against its own history.
+        run: uv run --no-sync python scripts/quality_metrics.py --baseline quality-baseline.json
+
+      - name: Keep the snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-snapshot
+          path: quality-baseline.json
+
+  congruence:
+    # The three tests that assert byte-identical frozen references against
+    # the R twin SKIP when qdaR is not checked out beside this repository --
+    # which is every ordinary CI run. This job puts it there so they really
+    # run, and fails if any of them skips anyway.
+    #
+    # Set the repository variable QDAR_PUBLISHED to "true" once
+    # github.com/fre-ms/qdaR exists; until then this job stays off rather
+    # than failing for a reason that is not a defect.
+    name: cross-language congruence
+    if: vars.QDAR_PUBLISHED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: qdaPy
+
+      - uses: actions/checkout@v4
+        with:
+          repository: fre-ms/qdaR
+          path: qdaR
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        working-directory: qdaPy
+        run: uv sync --extra vega --group dev
+
+      - name: Run the congruence tests, and refuse to let them skip
+        working-directory: qdaPy
+        run: |
+          # GitHub runs `bash -e`, NOT `bash -eo pipefail`: without this line
+          # the exit status of the pipeline is tee's, and a failing suite
+          # would pass the step.
+          set -o pipefail
+          uv run --no-sync pytest -ra \
+            tests/test_congruence.py \
+            tests/test_congruence_e35.py \
+            tests/test_gamma.py \
+            | tee result.txt
+          if grep -q "qdaR sources not present" result.txt; then
+            echo "::error::the R twin was checked out but the tests still skipped"
+            exit 1
+          fi
+
+  build:
+    name: wheel and sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Build
+        run: uv build
+
+      - name: Check the metadata PyPI will read
+        run: uvx twine check dist/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: dist/
