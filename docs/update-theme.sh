@@ -1,8 +1,10 @@
 #!/bin/sh
 # Pull the current zotqda-quarto-theme into this repository. The theme
-# is vendored — _extensions/ and fonts/ in each language project,
-# offline/ beside them — so the docs build without a sibling checkout
-# (CI). Run this after changing the theme, then rebuild and commit.
+# is vendored — the single copy of _extensions/ and fonts/ lives in
+# docs/_theme/, offline/ and print/ beside it — so the docs build
+# without a sibling checkout (CI). build.sh mirrors _theme/ into the
+# language projects. Run this after changing the theme, then rebuild
+# and commit.
 set -e
 cd "$(dirname "$0")"
 THEME="../../zotqda-quarto-theme"
