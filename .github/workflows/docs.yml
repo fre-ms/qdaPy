@@ -113,6 +113,13 @@ jobs:
 
           # The password goes into a mode-600 file rather than onto the command
           # line, where every process on the machine could read it.
+          #
+          # lftp tokenizes its script like a shell: an unquoted password with
+          # a space or semicolon in it ends the `open` command early and the
+          # remainder is parsed as a command of its own. Every interpolated
+          # value is therefore double-quoted, with lftp's two special
+          # characters (backslash, double quote) escaped.
+          lftp_quote() { printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'; }
           umask 077
           SCRIPT="$(mktemp)"
           trap 'rm -f "$SCRIPT"' EXIT
@@ -124,19 +131,19 @@ jobs:
             echo "set ftp:ssl-force true;"
             echo "set ftp:ssl-protect-data true;"
             echo "$SFTP_SETTINGS"
-            printf 'open -u %s,%s %s://%s%s;\n' \
-              "$DEPLOY_USER" "$DEPLOY_PASSWORD" "$PROTO" "$DEPLOY_HOST" \
-              "${DEPLOY_PORT:+:$DEPLOY_PORT}"
-            printf 'mirror --reverse --delete --no-perms --parallel=4 --verbose=1 site/ %s;\n' \
-              "$VERSION_DIR"
+            printf 'open -u "%s,%s" "%s://%s%s";\n' \
+              "$(lftp_quote "$DEPLOY_USER")" "$(lftp_quote "$DEPLOY_PASSWORD")" \
+              "$PROTO" "$DEPLOY_HOST" "${DEPLOY_PORT:+:$DEPLOY_PORT}"
+            printf 'mirror --reverse --delete --no-perms --parallel=4 --verbose=1 site/ "%s";\n' \
+              "$(lftp_quote "$VERSION_DIR")"
             # `latest` follows the newest release only. Rebuilding the docs of
             # an older one refreshes its own directory and leaves latest alone.
             if [ "$VERSION" = "$LATEST" ]; then
-              printf 'mirror --reverse --delete --no-perms --parallel=4 --verbose=1 site/ %s;\n' \
-                "$BASE/latest"
+              printf 'mirror --reverse --delete --no-perms --parallel=4 --verbose=1 site/ "%s";\n' \
+                "$(lftp_quote "$BASE/latest")"
             fi
-            printf 'put -O %s versions.json;\n' "$BASE"
-            printf 'put -O %s -o index.html docs-root/site-root.html;\n' "$BASE"
+            printf 'put -O "%s" versions.json;\n' "$(lftp_quote "$BASE")"
+            printf 'put -O "%s" -o index.html docs-root/site-root.html;\n' "$(lftp_quote "$BASE")"
           } > "$SCRIPT"
 
           lftp -f "$SCRIPT"
