@@ -143,7 +143,9 @@ jobs:
                 "$(lftp_quote "$BASE/latest")"
             fi
             printf 'put -O "%s" versions.json;\n' "$(lftp_quote "$BASE")"
-            printf 'put -O "%s" -o index.html docs-root/site-root.html;\n' "$(lftp_quote "$BASE")"
+            # put's syntax is `put [-O base] lfile [-o rfile]` -- the remote
+            # name comes after the local file, not before it.
+            printf 'put -O "%s" docs-root/site-root.html -o index.html;\n' "$(lftp_quote "$BASE")"
           } > "$SCRIPT"
 
           lftp -f "$SCRIPT"
