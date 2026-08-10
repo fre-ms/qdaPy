@@ -44,14 +44,19 @@ def test_the_stamp_column_is_the_same_everywhere():
 def test_example_lists_all_nine_reference_files():
     """The nine contract files, and nothing missing from them.
 
-    `example()` also offers sample.qdpx, which belongs to the REFI route
-    rather than to the contract, so it is named here explicitly instead of
-    being swept up by a count.
+    `example()` also offers sample.qdpx (REFI route) and the two demo-study
+    files (shared with qdaR, exercised by test_demo_export.py). None of the
+    three belongs to the contract, so they are named here explicitly instead
+    of being swept up by a count.
     """
     names = qdapy.example()
     assert set(EXPECTED["files"]) <= set(names)
-    assert len([n for n in names if n.endswith(".csv")]) == 9
-    assert set(names) - set(EXPECTED["files"]) == {"sample.qdpx"}
+    assert len([n for n in names if n.endswith(".csv")]) == 11
+    assert set(names) - set(EXPECTED["files"]) == {
+        "sample.qdpx",
+        "zotqda-fragments-demo.csv",
+        "zotqda-history-demo.csv",
+    }
 
 
 def test_example_refuses_a_name_it_does_not_have():
