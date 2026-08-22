@@ -10,7 +10,7 @@ cd "$(dirname "$0")"
 # written against this version's output. To upgrade: install the new
 # Quarto, build with ALLOW_UNPINNED_QUARTO=1, run the smoketest, look
 # at one site — then move the pin (and the one in CI).
-PINNED="1.9.38"
+PINNED="1.10.18"
 ACTUAL="$(quarto --version)"
 if [ "$ACTUAL" != "$PINNED" ] && [ -z "$ALLOW_UNPINNED_QUARTO" ]; then
   echo "docs/build.sh: quarto is $ACTUAL, pinned is $PINNED" >&2
