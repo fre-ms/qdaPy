@@ -77,7 +77,7 @@ jobs:
           test -n "$(find dist -name '*.whl'    -print -quit)"
           test -n "$(find dist -name '*.tar.gz' -print -quit)"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
@@ -97,7 +97,7 @@ jobs:
       # artefacts as PEP 740 attestations.
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/

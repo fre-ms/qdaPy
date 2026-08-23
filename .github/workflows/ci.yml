@@ -112,7 +112,7 @@ jobs:
 
       - name: Keep the snapshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: quality-snapshot
           path: quality-baseline.json
@@ -182,7 +182,7 @@ jobs:
       - name: Check the metadata PyPI will read
         run: uvx twine check dist/*
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: distributions
           path: dist/
