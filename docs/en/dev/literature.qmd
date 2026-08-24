@@ -158,15 +158,18 @@ reviewer cannot match against the original.
 
 ## Works without a DOI
 
-* Cramér, H. (1946). *Mathematical Methods of Statistics*. Princeton
-  University Press., where the *V* reported by `qdapy.chisq()` comes from.
-* Sokal, R. R., & Sneath, P. H. A. (1963). *Principles of Numerical
-  Taxonomy*. Freeman. Average linkage, the default used here.
-* Wilkinson, L. (2005). *The Grammar of Graphics* (2nd ed.). Springer., the
-  book the plotting backends descend from.
-* REFI-QDA Standard, <https://www.qdasoftware.org/>. The interchange format
-  zotQDA reads and writes. Not this package's concern, but it explains where
-  a few column names come from.
+* [Cramér, H. (1946). *Mathematical Methods of Statistics*. Princeton
+  University Press.]{#litref-Cramer1946Mathematical}, where the *V* reported
+  by `qdapy.chisq()` comes from.
+* [Sokal, R. R., & Sneath, P. H. A. (1963). *Principles of Numerical
+  Taxonomy*. Freeman.]{#litref-Sokal1963Principles} Average linkage, the
+  default used here.
+* [Wilkinson, L. (2005). *The Grammar of Graphics* (2nd ed.).
+  Springer.]{#litref-Wilkinson2005Grammar}, the book the plotting backends
+  descend from.
+* [REFI-QDA Standard]{#litref-RefiQda}, <https://www.qdasoftware.org/>. The
+  interchange format zotQDA reads and writes. Not this package's concern, but
+  it explains where a few column names come from.
 
 ::: {.callout-note title="One reference that is deliberately missing"}
 

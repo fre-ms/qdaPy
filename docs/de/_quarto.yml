@@ -8,6 +8,11 @@ project:
   output-dir: ../../site/de
   resources:
     - fonts/
+  # Reichert die gerenderte Literaturseite mit COinS (für Zotero lesbar) und
+  # BibTeX/RIS-Download-Buttons pro Eintrag an, aus dev/references.bib
+  # (Theme-Funktion).
+  post-render:
+    - ../offline/literature.py
 
 lang: de
 
