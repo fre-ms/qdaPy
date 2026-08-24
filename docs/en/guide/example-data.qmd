@@ -16,8 +16,31 @@ The same two files ship byte-identically in the R twin
 [qdaR](https://qdar.zotqda.org) (`qda_example("zotqda-fragments-demo.csv")`),
 and a test in each package fails if the copies ever drift apart. Results
 computed on them are therefore comparable across the two packages down to
-the last digit. The shipped fragments give α = 0.7266 and AC1 = 0.7299 in
-both, and both test suites freeze those values.
+the last digit, and both test suites freeze the coefficients below.
+
+::: {.callout-important title="Reliability comes from the history, not the fragments"}
+The fragments export is zotQDA's *last-state* table: one row per annotation
+and code, with a single `codedBy` (last add wins). Where two coders coded the
+same segment, that shape collapses — the fragments file keeps only the final
+state and cannot tell you which coders agreed. Intercoder reliability is
+therefore reconstructed from the **history**, the coding log with one row per
+`add`/`remove` event, exactly as qdaZ computes it:
+
+```python
+codings = qdapy.codings(hist)               # replay the log to current state
+matrix  = qdapy.units(codings, coder="user")
+qdapy.agreement.agreement(matrix)
+```
+
+At the leaf codes this gives **α = 0.672** and **AC1 = 0.674**. Flattening the
+paths to their top theme (`units(..., level=1)`) lifts it to **α = 0.897** and
+**AC1 = 0.898**: coders who split over `Belastung/emotional` against
+`Belastung/körperlich` still agree the segment is about `Belastung`. That
+level effect is a statement about the code system, not the coders — and it is
+the finding the example is built to show. The fragments file stays for the
+corpus and last-state analyses (`code_counts()`, `code_matrix()`,
+co-occurrence).
+:::
 
 ::: {.callout-note title="Synthetic, and saying so"}
 
@@ -67,7 +90,8 @@ something true to find:
   segment twice, so `agreement()["multi_set_aside"]` has something to
   count.
 * **The history contains second thoughts.** Six codings were later
-  removed; `timeline()` ignoring them is the documented behaviour.
+  removed; `timeline()` ignoring them is the documented behaviour, and
+  `codings()` replays the removes so they never reach the reliability matrix.
 
 Positions are present (`positionKind == "text"`), so `segments()` works —
 but because the segments are consensus segments, both coders carry the
@@ -77,16 +101,24 @@ different export.
 
 ## How it was generated
 
-`scripts/make_demo_export.py` in the qdaPy repository writes both files
-into both packages in one run. Everything is derived from one fixed seed
-and fixed timestamps, with no clock and no environment involved. The
-script is therefore reproducible to the byte, which is what the
-cross-package identity test relies on. The column set comes from the exchange contract at run
-time, so a contract change shows up here as a regenerated file rather
-than a stale one.
+The two CSVs are a **genuine zotQDA export**, not a hand-written fixture.
+`tools/gen-demo-study.js` in the zotQDA repository builds a native zotQDA
+model of the study and drives the plugin's own exporters — the same code
+that exports any real study — so the files carry exactly the shape and byte
+layout a real export has. Run with `--distribute`, it also copies the CSVs
+into this package (and into qdaR), which is what the cross-package identity
+test relies on:
 
-To change the study, edit the constants at the top of the script (the
-code weights per setting, the partner pairs, the agreement and skip
-rates), run it once, and update the frozen coefficients in
-`tests/test_demo_export.py` and `tests/testthat/test-demo-export.R` to
-whatever honestly comes out.
+```bash
+node tools/gen-demo-study.js --distribute
+```
+
+The design is fixed (seeded interviews and timestamps, no clock involved), so
+the output is reproducible to the byte. The same study also ships as a native
+loadable example inside the zotQDA plugin — a REFI-QDA project under
+`examples/pflege-workload`, importable through the plugin's project import — so
+you can open it in zotQDA itself, not only read its export here.
+
+The old `scripts/make_demo_export.py` in this repository is retired: it now
+prints this provenance and exits non-zero, so nobody regenerates the demo
+through the former synthetic path.

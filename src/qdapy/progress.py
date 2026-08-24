@@ -10,7 +10,61 @@ from typing import TypedDict
 
 import pandas as pd
 
-__all__ = ["code_drift", "new_codes", "saturation_ratio"]
+__all__ = ["code_drift", "codings", "new_codes", "saturation_ratio"]
+
+
+def codings(
+    history: pd.DataFrame,
+    *,
+    unit: str = "annotationKey",
+    user: str = "user",
+    action: str = "action",
+    code: str = "code",
+    ts: str = "ts",
+) -> pd.DataFrame:
+    """Reconstruct the current per-coder coding state from the log.
+
+    zotQDA's *fragments* export is a last-state table: one row per annotation
+    and code, with a single ``codedBy``.  Where two coders coded the same
+    segment, that shape collapses -- the fragments file cannot tell you which
+    coders agreed, only the last state.  Intercoder reliability therefore has
+    to come from the *history* export, which keeps one row per coding event.
+
+    This replays that log.  Every ``add`` and ``remove`` is applied in ``ts``
+    order for each ``(annotationKey, user, code)`` triple, and the triple is
+    kept only when its last event was an ``add``.  The result is the per-coder
+    coding that actually stood at the end -- the same reconstruction qdaZ
+    itself makes -- so it can be reshaped for agreement:
+
+        >>> hist = qdapy.read_history(qdapy.example("zotqda-history-demo.csv"))
+        >>> matrix = qdapy.units(qdapy.codings(hist), coder="user")
+        >>> qdapy.agreement.agreement(matrix)  # doctest: +SKIP
+
+    Parameters
+    ----------
+    history:
+        The coding log, as read by :func:`qdapy.read_history`.
+    unit, user, action, code, ts:
+        Column names, should the log ever carry different ones.
+
+    Returns
+    -------
+    pandas.DataFrame
+        One row per surviving ``(annotationKey, user, code)`` triple, with
+        columns ``annotationKey``, ``user`` and ``code`` -- plus ``citekey``
+        and ``title`` when the log carries them, so the reconstruction stays a
+        drop-in for the fragments the corpus tables expect.
+    """
+    for col in (unit, user, action, code, ts):
+        if col not in history.columns:
+            raise KeyError(f"history is missing the column {col!r}")
+
+    ordered = history.sort_values(ts, kind="stable")
+    last = ordered.drop_duplicates(subset=[unit, user, code], keep="last")
+    kept = last[last[action].astype(str) == "add"]
+
+    carry = [c for c in ("citekey", "title") if c in history.columns]
+    return kept[[unit, user, code, *carry]].reset_index(drop=True)
 
 
 def new_codes(history: pd.DataFrame, *, doc_col: str = "citekey") -> pd.DataFrame:

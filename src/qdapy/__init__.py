@@ -54,7 +54,7 @@ from .discovery import documents_for, saturation_index
 from .frames import code_counts, code_matrix, saturation, timeline
 from .gamma import gamma
 from .planning import kappa_lower, plan_kappa, plan_themes, theme_power
-from .progress import code_drift, new_codes, saturation_ratio
+from .progress import code_drift, codings, new_codes, saturation_ratio
 from .qdpx import QdpxProject, read_qdpx
 from .read import (
     ContractError,
@@ -132,6 +132,7 @@ __all__ = [
     "code_distance",
     "code_drift",
     "code_matrix",
+    "codings",
     "confusion",
     "contract",
     "coreq",

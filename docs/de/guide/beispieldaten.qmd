@@ -17,9 +17,34 @@ Dieselben zwei Dateien liegen byte-identisch im R-Zwilling
 [qdaR](https://qdar.zotqda.org) (`qda_example("zotqda-fragments-demo.csv")`),
 und ein Test in jedem Paket schlägt fehl, sobald die Kopien
 auseinanderlaufen. Ergebnisse darauf sind deshalb zwischen den Paketen bis
-auf die letzte Stelle vergleichbar. Die mitgelieferten Fragmente ergeben
-in beiden α = 0,7266 und AC1 = 0,7299, und beide Testsammlungen frieren
-diese Werte ein.
+auf die letzte Stelle vergleichbar, und beide Testsammlungen frieren die
+Koeffizienten unten ein.
+
+::: {.callout-important title="Die Reliabilität kommt aus der Historie, nicht aus den Fragmenten"}
+Der Fragment-Export ist zotQDAs *Endzustands*-Tabelle: eine Zeile je
+Annotation und Code, mit einem einzigen `codedBy` (das letzte Hinzufügen
+gewinnt). Wo zwei Kodierende dasselbe Segment kodierten, bricht diese Form
+zusammen — die Fragment-Datei behält nur den Endzustand und kann nicht sagen,
+welche Kodierenden übereinstimmten. Die Intercoder-Reliabilität wird darum aus
+der **Historie** rekonstruiert, dem Kodierprotokoll mit einer Zeile je
+`add`/`remove`-Ereignis, genau wie qdaZ sie berechnet:
+
+```python
+codings = qdapy.codings(hist)               # Protokoll bis zum Endzustand nachspielen
+matrix  = qdapy.units(codings, coder="user")
+qdapy.agreement.agreement(matrix)
+```
+
+Auf den Blattcodes ergibt das **α = 0,672** und **AC1 = 0,674**. Kürzt man die
+Pfade auf ihr oberstes Thema (`units(..., level=1)`), steigt es auf
+**α = 0,897** und **AC1 = 0,898**: Kodierende, die sich zwischen
+`Belastung/emotional` und `Belastung/körperlich` uneins sind, stimmen weiter
+darin überein, dass das Segment von `Belastung` handelt. Dieser
+Ebeneneffekt ist eine Aussage über das Codesystem, nicht über die Kodierenden
+— und er ist der Befund, für den das Beispiel gebaut ist. Die Fragment-Datei
+bleibt für die Korpus- und Endzustandsanalysen (`code_counts()`,
+`code_matrix()`, Ko-Okkurrenz).
+:::
 
 ::: {.callout-note title="Synthetisch, und es sagt es auch"}
 
@@ -71,7 +96,8 @@ etwas Wahres zu finden hat:
   `agreement()["multi_set_aside"]` etwas zu zählen hat.
 * **Die Historie enthält Sinneswandel.** Sechs Kodierungen wurden später
   entfernt; dass `timeline()` sie übergeht, ist das dokumentierte
-  Verhalten.
+  Verhalten, und `codings()` spielt die Entfernungen nach, sodass sie nie in
+  die Reliabilitätsmatrix gelangen.
 
 Positionen sind vorhanden (`positionKind == "text"`), `segments()`
 funktioniert also. Doch weil es Konsens-Segmente sind, tragen beide
@@ -81,17 +107,24 @@ Markierungen jeder Person, also einen anderen Export.
 
 ## Wie sie erzeugt wurde
 
-`scripts/make_demo_export.py` im qdaPy-Repository schreibt beide Dateien
-in einem Lauf in beide Pakete. Alles leitet sich aus einem festen Samen
-und festen Zeitstempeln ab, ohne Uhr und ohne Umgebung. Das Skript ist
-darum bis aufs Byte reproduzierbar, worauf sich der paketübergreifende
-Identitätstest verlässt. Die Spaltenliste kommt zur Laufzeit
-aus dem Austauschvertrag; eine Vertragsänderung zeigt sich hier als neu
-erzeugte Datei statt als veraltete.
+Die beiden CSVs sind ein **echter zotQDA-Export**, kein handgeschriebenes
+Fixture. `tools/gen-demo-study.js` im zotQDA-Repository baut ein natives
+zotQDA-Modell der Studie und treibt die plugin-eigenen Exporter an — denselben
+Code, der jede echte Studie exportiert —, sodass die Dateien genau die Form und
+das Byte-Layout eines echten Exports tragen. Mit `--distribute` kopiert es die
+CSVs zusätzlich in dieses Paket (und in qdaR), worauf sich der
+paketübergreifende Identitätstest verlässt:
 
-Wer die Studie ändern will, ändert die Konstanten am Kopf des Skripts
-(die Code-Gewichte je Bereich, die Partnerpaare, Übereinstimmungs- und
-Auslassungsrate), lässt es einmal laufen und trägt die eingefrorenen
-Koeffizienten in `tests/test_demo_export.py` und
-`tests/testthat/test-demo-export.R` auf das ein, was ehrlich
-herauskommt.
+```bash
+node tools/gen-demo-study.js --distribute
+```
+
+Der Aufbau ist fest (gesamte Interviews und Zeitstempel, keine Uhr im Spiel),
+die Ausgabe also bis aufs Byte reproduzierbar. Dieselbe Studie liegt außerdem
+als natives, ladbares Beispiel im zotQDA-Plugin bei — ein REFI-QDA-Projekt
+unter `examples/pflege-workload`, über den Projektimport des Plugins ladbar —,
+sodass man sie in zotQDA selbst öffnen kann, nicht nur ihren Export hier liest.
+
+Das alte `scripts/make_demo_export.py` in diesem Repository ist stillgelegt: es
+gibt jetzt diese Herkunft aus und endet mit einem Fehlercode, damit niemand die
+Demo über den früheren synthetischen Weg neu erzeugt.
