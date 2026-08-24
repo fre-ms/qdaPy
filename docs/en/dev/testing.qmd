@@ -27,7 +27,7 @@ snapshot against its committed baseline; a wheel and sdist through
 ::: {.callout-warning title="Three tests skip in an ordinary checkout"}
 
 The comparisons that assert a frozen reference is byte-identical to the
-copy in qdaR need the R package **beside** this one on disk. In a bare
+copy in [qdaR](https://qdar.zotqda.org) need the R package **beside** this one on disk. In a bare
 clone they skip, and a skipped test proves nothing while looking like it
 passed.
 

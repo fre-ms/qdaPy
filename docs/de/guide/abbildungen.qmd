@@ -109,7 +109,7 @@ Wachstumskurve, die sie weiterzählt, schmeichelt dem Ergebnis.
 
 ## Die Grafiken des Plugins selbst
 
-Jede Grafik in qdaZ lässt sich als Paar aus Daten und Spezifikation sichern.
+Jede Grafik in [qdaZ](https://qdaz.zotqda.org) lässt sich als Paar aus Daten und Spezifikation sichern.
 Das Rendern der Spezifikation stellt die Abbildung genau so wieder her, wie sie
 in Zotero aussah:
 

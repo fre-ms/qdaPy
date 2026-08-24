@@ -27,7 +27,7 @@ gewinnt). Wo zwei Kodierende dasselbe Segment kodierten, bricht diese Form
 zusammen — die Fragment-Datei behält nur den Endzustand und kann nicht sagen,
 welche Kodierenden übereinstimmten. Die Intercoder-Reliabilität wird darum aus
 der **Historie** rekonstruiert, dem Kodierprotokoll mit einer Zeile je
-`add`/`remove`-Ereignis, genau wie qdaZ sie berechnet:
+`add`/`remove`-Ereignis, genau wie [qdaZ](https://qdaz.zotqda.org) sie berechnet:
 
 ```python
 codings = qdapy.codings(hist)               # Protokoll bis zum Endzustand nachspielen

@@ -166,7 +166,7 @@ reviewer cannot match against the original.
   Taxonomy*. Freeman. ISBN 978-0-7167-0697-7.]{#litref-Sokal1963Principles}
   Average linkage, the default used here.
 * [REFI-QDA Standard]{#litref-RefiQda}, <https://www.qdasoftware.org/>. The
-  interchange format zotQDA reads and writes. Not this package's concern, but
+  interchange format [zotQDA](https://zotqda.org) reads and writes. Not this package's concern, but
   it explains where a few column names come from.
 
 ::: {.callout-note title="One reference that is deliberately missing"}

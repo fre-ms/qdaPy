@@ -28,7 +28,7 @@ Kongruenzprüfung.
 ::: {.callout-warning title="Drei Tests werden in einem gewöhnlichen Checkout übersprungen"}
 
 Die Vergleiche, die behaupten, eine eingefrorene Referenz sei byteidentisch
-zur Kopie in qdaR, brauchen das R-Paket **neben** diesem auf der Platte. In
+zur Kopie in [qdaR](https://qdar.zotqda.org), brauchen das R-Paket **neben** diesem auf der Platte. In
 einem nackten Klon werden sie übersprungen — und ein übersprungener Test
 beweist nichts, während er aussieht, als sei er durchgelaufen.
 

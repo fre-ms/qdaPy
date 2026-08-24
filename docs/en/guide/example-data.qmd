@@ -24,7 +24,7 @@ and code, with a single `codedBy` (last add wins). Where two coders coded the
 same segment, that shape collapses — the fragments file keeps only the final
 state and cannot tell you which coders agreed. Intercoder reliability is
 therefore reconstructed from the **history**, the coding log with one row per
-`add`/`remove` event, exactly as qdaZ computes it:
+`add`/`remove` event, exactly as [qdaZ](https://qdaz.zotqda.org) computes it:
 
 ```python
 codings = qdapy.codings(hist)               # replay the log to current state

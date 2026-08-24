@@ -3,7 +3,7 @@ title: "Licence"
 ---
 
 
-**AGPL-3.0-or-later**, the same terms as zotQDA, qdaZ and the R twin qdaR.
+**AGPL-3.0-or-later**, the same terms as [zotQDA](https://zotqda.org), [qdaZ](https://qdaz.zotqda.org) and the R twin [qdaR](https://qdar.zotqda.org).
 The full text is in `LICENSE`.
 
 ## What you produce with qdaPy is yours

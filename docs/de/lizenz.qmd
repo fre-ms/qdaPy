@@ -3,8 +3,8 @@ title: "Lizenz"
 ---
 
 
-**AGPL-3.0-or-later**, dieselben Bedingungen wie bei zotQDA, qdaZ und dem
-R-Zwilling qdaR. Der vollständige Text steht in `LICENSE`.
+**AGPL-3.0-or-later**, dieselben Bedingungen wie bei [zotQDA](https://zotqda.org), [qdaZ](https://qdaz.zotqda.org) und dem
+R-Zwilling [qdaR](https://qdar.zotqda.org). Der vollständige Text steht in `LICENSE`.
 
 ## Was Sie mit qdaPy erarbeiten, gehört Ihnen
 

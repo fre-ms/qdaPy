@@ -170,7 +170,7 @@ Gutachterin nicht mit dem Original abgleichen.
   Taxonomy*. Freeman. ISBN 978-0-7167-0697-7.]{#litref-Sokal1963Principles}
   Average Linkage, die hier voreingestellte Verknüpfung.
 * [REFI-QDA-Standard]{#litref-RefiQda}, <https://www.qdasoftware.org/>. Das
-  Austauschformat, das zotQDA liest und schreibt. Nicht Sache dieses Pakets,
+  Austauschformat, das [zotQDA](https://zotqda.org) liest und schreibt. Nicht Sache dieses Pakets,
   erklärt aber, woher ein paar Spaltennamen kommen.
 
 ::: {.callout-note title="Eine Quelle, die absichtlich fehlt"}

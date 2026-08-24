@@ -13,7 +13,7 @@ qdaPy für sich genommen ist eine Bibliothek, und auf eine Bibliothek steigt
 niemand um. Der realistische Vergleich ist der zwischen einem etablierten
 Programm — MAXQDA, ATLAS.ti, NVivo, QDA Miner, Dedoose — und der
 **Kombination** aus Zotero, dem Plugin [zotQDA](https://zotqda.org) zum
-Kodieren, [qdaZ](https://qdaz.zotqda.org) zum Auswerten im Fenster und qdaR
+Kodieren, [qdaZ](https://qdaz.zotqda.org) zum Auswerten im Fenster und [qdaR](https://qdar.zotqda.org)
 bzw. qdaPy zum Auswerten im Skript. Diese Kombination heißt im Folgenden
 *das Ökosystem*.
 

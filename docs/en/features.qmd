@@ -3,7 +3,7 @@ title: "What qdaPy does"
 ---
 
 
-qdaPy reads the files the zotQDA and qdaZ Zotero plugins export and computes
+qdaPy reads the files the [zotQDA](https://zotqda.org) and [qdaZ](https://qdaz.zotqda.org) Zotero plugins export and computes
 the analyses a qualitative study reports. It is a library: there is no
 interface, and it does no coding of its own.
 
@@ -33,7 +33,7 @@ segments, the removals in the coding log and the consensus procedures do not.
 ## Agreement between coders
 
 Six coefficients, each with a **95 % percentile bootstrap interval** from a
-seeded generator, so the same data gives the same interval here, in qdaR and in
+seeded generator, so the same data gives the same interval here, in [qdaR](https://qdar.zotqda.org) and in
 the plugin:
 
 - percentage agreement
