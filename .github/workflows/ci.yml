@@ -65,7 +65,7 @@ jobs:
 
       - name: ruff
         # includes the C901 complexity gate configured in pyproject.toml
-        run: uv run --no-sync ruff check src tests scripts
+        run: uv run --no-sync ruff check src tests script
 
       - name: mypy
         # the package ships py.typed, so its annotations are a promise
