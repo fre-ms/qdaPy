@@ -59,7 +59,7 @@ jobs:
       - name: ruff and mypy
         run: |
           set -euo pipefail
-          uv run --no-sync ruff check src tests script
+          uv run --no-sync ruff check src test script
           uv run --no-sync mypy
 
       - name: Build the sdist and the wheel

@@ -41,7 +41,7 @@ correct reader must produce. The samples deliberately contain what a naive
 `split(",")` gets wrong: embedded quotes, the delimiter inside a field, and a
 line break inside a field.
 
-`tests/test_contract.py` walks all nine and compares field by field. Passing
+`test/test_contract.py` walks all nine and compares field by field. Passing
 that means this reader agrees with the plugin on encoding, quoting, line
 breaks and the byte-order mark, the four things two CSV implementations
 usually differ about.

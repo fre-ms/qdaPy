@@ -51,7 +51,7 @@ numbers here can be trusted.
 
 ### Congruence with the plugin
 
-`tests/qdaz-reference.json` holds 109 randomly generated coder matrices, two
+`test/qdaz-reference.json` holds 109 randomly generated coder matrices, two
 to four coders, deliberately skewed marginals, missing ratings, together with
 the values the plugin's JavaScript computes for them. `test_congruence.py`
 recomputes all six coefficients and compares to twelve decimal places.
@@ -67,7 +67,7 @@ implementations agree.
 ### Congruence with the R twin on the statistics
 
 `tests/stats-reference.json` holds what qdaR computes for
-`tests/stats-fixture.csv` — 256 codings over six codes, five documents and two
+`test/stats-fixture.csv` — 256 codings over six codes, five documents and two
 coders, with expected counts small enough to force the exact-test branch.
 `test_stats.py` reproduces the chi-squared statistic, Cramér's V, the Jaccard
 matrix, the cophenetic correlation, the scaling distances and the

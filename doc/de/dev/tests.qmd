@@ -53,7 +53,7 @@ ungewöhnlich, und sie sind der Grund, warum den Zahlen hier zu trauen ist.
 
 ### Kongruenz mit dem Plugin
 
-`tests/qdaz-reference.json` enthält 109 zufällig erzeugte Kodierermatrizen, mit
+`test/qdaz-reference.json` enthält 109 zufällig erzeugte Kodierermatrizen, mit
 zwei bis vier Kodierenden, absichtlich schiefen Randverteilungen und fehlenden
 Urteilen, dazu die Werte, die das JavaScript des Plugins dafür rechnet.
 `test_congruence.py` rechnet alle sechs Koeffizienten nach und vergleicht auf

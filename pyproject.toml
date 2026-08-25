@@ -86,7 +86,7 @@ packages = ["src/qdapy"]
 [tool.hatch.build.targets.sdist]
 include = [
     "src",
-    "tests",
+    "test",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
@@ -96,7 +96,7 @@ include = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["test"]
 addopts = "-q"
 filterwarnings = ["error::DeprecationWarning:qdapy.*"]
 
@@ -120,7 +120,7 @@ ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 88
-src = ["src", "tests"]
+src = ["src", "test"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "NPY", "PD", "C901"]
@@ -137,7 +137,7 @@ ignore = [
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["E501"]
+"test/*" = ["E501"]
 # the COREQ items are quoted verbatim from the published table; reflowing
 # them to fit a line limit would risk altering a checklist a reviewer
 # matches word for word against the original

@@ -218,7 +218,7 @@ def main() -> int:
         print(f"wrote {t} ({t.stat().st_size} bytes)")
     ref = json.dumps(_reference(targets[0]), ensure_ascii=False, indent=1,
                      sort_keys=True) + "\n"
-    ref_targets = [HERE / "tests" / "qdpx-reference.json"]
+    ref_targets = [HERE / "test" / "qdpx-reference.json"]
     if len(targets) == 2:
         ref_targets.append(HERE.parent / "qdaR" / "tests" / "testthat"
                            / "qdpx-reference.json")

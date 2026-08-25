@@ -39,7 +39,7 @@ jobs:
           enable-cache: true
 
       - name: Install the package and its test dependencies
-        # `vega` is an optional extra, but tests/test_plots.py skips its
+        # `vega` is an optional extra, but test/test_plots.py skips its
         # altair test without it -- and a silent skip is not a test run.
         run: uv sync --python ${{ matrix.python }} --extra vega --group dev
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: ruff
         # includes the C901 complexity gate configured in pyproject.toml
-        run: uv run --no-sync ruff check src tests script
+        run: uv run --no-sync ruff check src test script
 
       - name: mypy
         # the package ships py.typed, so its annotations are a promise
@@ -156,9 +156,9 @@ jobs:
           # would pass the step.
           set -o pipefail
           uv run --no-sync pytest -ra \
-            tests/test_congruence.py \
-            tests/test_congruence_e35.py \
-            tests/test_gamma.py \
+            test/test_congruence.py \
+            test/test_congruence_e35.py \
+            test/test_gamma.py \
             | tee result.txt
           if grep -q "qdaR sources not present" result.txt; then
             echo "::error::the R twin was checked out but the tests still skipped"

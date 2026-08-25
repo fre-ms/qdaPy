@@ -147,7 +147,7 @@ def complexipy_metrics() -> dict[str, Any]:
 
 def ruff_metrics() -> dict[str, Any]:
     """Findings under the project's own ruff config (includes C901)."""
-    rc, out = _py("ruff", "check", "src", "tests", "--statistics")
+    rc, out = _py("ruff", "check", "src", "test", "--statistics")
     if rc == 127:
         return {"error": out}
     counts: dict[str, int] = {}
@@ -201,7 +201,7 @@ def vulture_metrics() -> dict[str, Any]:
     Candidates, not findings: vulture cannot see pytest fixtures, dataclass
     fields read by callers, or PEP 562 module hooks. Every hit needs a look.
     """
-    rc, out = _run(["vulture", str(SRC), str(ROOT / "tests"),
+    rc, out = _run(["vulture", str(SRC), str(ROOT / "test"),
                     "--min-confidence", "60"])
     if rc == 127:
         return {"error": out}

@@ -42,7 +42,7 @@ woran ein naives `split(",")` scheitert: eingebettete Anführungszeichen, das
 Trennzeichen innerhalb eines Feldes und einen Zeilenumbruch innerhalb eines
 Feldes.
 
-`tests/test_contract.py` geht alle neun durch und vergleicht Feld für Feld. Wer
+`test/test_contract.py` geht alle neun durch und vergleicht Feld für Feld. Wer
 das besteht, ist sich mit dem Plugin einig über Zeichenkodierung,
 Anführungszeichen, Zeilenumbrüche und die Bytereihenfolge-Markierung — die vier
 Dinge, in denen sich zwei CSV-Umsetzungen üblicherweise unterscheiden.
