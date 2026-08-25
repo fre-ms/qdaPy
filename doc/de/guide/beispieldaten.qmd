@@ -108,7 +108,7 @@ Markierungen jeder Person, also einen anderen Export.
 ## Wie sie erzeugt wurde
 
 Die beiden CSVs sind ein **echter zotQDA-Export**, kein handgeschriebenes
-Fixture. `tools/gen-demo-study.js` im zotQDA-Repository baut ein natives
+Fixture. `tool/gen-demo-study.js` im zotQDA-Repository baut ein natives
 zotQDA-Modell der Studie und treibt die plugin-eigenen Exporter an — denselben
 Code, der jede echte Studie exportiert —, sodass die Dateien genau die Form und
 das Byte-Layout eines echten Exports tragen. Mit `--distribute` kopiert es die
@@ -116,7 +116,7 @@ CSVs zusätzlich in dieses Paket (und in qdaR), worauf sich der
 paketübergreifende Identitätstest verlässt:
 
 ```bash
-node tools/gen-demo-study.js --distribute
+node tool/gen-demo-study.js --distribute
 ```
 
 Der Aufbau ist fest (gesamte Interviews und Zeitstempel, keine Uhr im Spiel),
@@ -125,6 +125,6 @@ als natives, ladbares Beispiel im zotQDA-Plugin bei — ein REFI-QDA-Projekt
 unter `examples/pflege-workload`, über den Projektimport des Plugins ladbar —,
 sodass man sie in zotQDA selbst öffnen kann, nicht nur ihren Export hier liest.
 
-Das alte `scripts/make_demo_export.py` in diesem Repository ist stillgelegt: es
+Das alte `script/make_demo_export.py` in diesem Repository ist stillgelegt: es
 gibt jetzt diese Herkunft aus und endet mit einem Fehlercode, damit niemand die
 Demo über den früheren synthetischen Weg neu erzeugt.

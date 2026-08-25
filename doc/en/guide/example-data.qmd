@@ -102,7 +102,7 @@ different export.
 ## How it was generated
 
 The two CSVs are a **genuine zotQDA export**, not a hand-written fixture.
-`tools/gen-demo-study.js` in the zotQDA repository builds a native zotQDA
+`tool/gen-demo-study.js` in the zotQDA repository builds a native zotQDA
 model of the study and drives the plugin's own exporters — the same code
 that exports any real study — so the files carry exactly the shape and byte
 layout a real export has. Run with `--distribute`, it also copies the CSVs
@@ -110,7 +110,7 @@ into this package (and into qdaR), which is what the cross-package identity
 test relies on:
 
 ```bash
-node tools/gen-demo-study.js --distribute
+node tool/gen-demo-study.js --distribute
 ```
 
 The design is fixed (seeded interviews and timestamps, no clock involved), so
@@ -119,6 +119,6 @@ loadable example inside the zotQDA plugin — a REFI-QDA project under
 `examples/pflege-workload`, importable through the plugin's project import — so
 you can open it in zotQDA itself, not only read its export here.
 
-The old `scripts/make_demo_export.py` in this repository is retired: it now
+The old `script/make_demo_export.py` in this repository is retired: it now
 prints this provenance and exits non-zero, so nobody regenerates the demo
 through the former synthetic path.

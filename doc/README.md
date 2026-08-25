@@ -40,8 +40,8 @@ tree on purpose:
 
 Verify a build with
 
-    python3 docs/offline/smoketest.py site/en site/de
+    python3 doc/offline/smoketest.py site/en site/de
 
 Deployment is unchanged: `site/` is uploaded under a version directory,
-`scripts/gen_versions.py` maintains `versions.json`, and the inlined
+`script/gen_versions.py` maintains `versions.json`, and the inlined
 version banner does the rest.

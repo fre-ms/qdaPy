@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build shared/references.bib from the Zotero library.
 
-Reads every work on docs/en/dev/literature.md, looks it up in the running
+Reads every work on doc/en/dev/literature.md, looks it up in the running
 Zotero via the Better BibTeX JSON-RPC endpoint (DOI first, title as the
 fallback), and exports the found items as Better BibLaTeX into
 shared/references.bib. Works it cannot find are printed at the end so

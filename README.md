@@ -113,7 +113,7 @@ python -m pytest                  # the suite
 ruff check src tests scripts      # style, plus the C901 complexity gate
 mypy                              # the package ships py.typed: expected clean
 
-python scripts/quality_metrics.py --baseline quality-baseline.json
+python script/quality_metrics.py --baseline quality-baseline.json
 ```
 
 The last one is a trend instrument rather than a verdict. It records

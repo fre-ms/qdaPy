@@ -9,7 +9,7 @@ produced by the same code that exports any real study.
 
 Regenerate and redistribute from the zotQDA checkout instead::
 
-    node tools/gen-demo-study.js --distribute
+    node tool/gen-demo-study.js --distribute
 
 which drives zotQDA's real export code and copies the CSVs into this package
 (and into qdaR) so the shipped copies stay byte-identical.  The same study is

@@ -74,7 +74,7 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: "1.10.18"   # keep equal to docs/build.sh's pin
+          version: "1.10.18"   # keep equal to doc/build.sh's pin
 
       - name: Build the documentation
         # Renders the executable pages against this checkout, so a
@@ -83,8 +83,8 @@ jobs:
         # from a plain file tree, which is how the bundled help ships.
         run: |
           uv pip install jupyter
-          QUARTO_PYTHON="$(uv run --no-sync python -c 'import sys; print(sys.executable)')" ./docs/build.sh
-          python3 docs/offline/smoketest.py site/en site/de
+          QUARTO_PYTHON="$(uv run --no-sync python -c 'import sys; print(sys.executable)')" ./doc/build.sh
+          python3 doc/offline/smoketest.py site/en site/de
         env:
           QDA_SMOKE_BROWSER: google-chrome
 
@@ -108,7 +108,7 @@ jobs:
         # coverage. Absolute thresholds make a poor gate (Nagappan, Ball and
         # Zeller 2006, doi:10.1145/1134285.1134349); this compares the
         # project against its own history.
-        run: uv run --no-sync python scripts/quality_metrics.py --baseline quality-baseline.json
+        run: uv run --no-sync python script/quality_metrics.py --baseline quality-baseline.json
 
       - name: Keep the snapshot
         if: always()

@@ -59,7 +59,7 @@ dev = [
     "build>=1.2",
     "twine>=5.0",
 ]
-# What `scripts/quality_metrics.py` needs. Pinned rather than floored: a
+# What `script/quality_metrics.py` needs. Pinned rather than floored: a
 # snapshot is only comparable with the next one if the measuring instrument
 # did not move underneath it.
 quality = [

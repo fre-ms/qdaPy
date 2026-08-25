@@ -20,10 +20,10 @@ WHAT IT MEASURES (each tool independent; a missing tool is recorded, not fatal)
   * coverage    line coverage total and per module
 
 USAGE
-  python scripts/quality_metrics.py                 # human summary
-  python scripts/quality_metrics.py --json out.json # + write the snapshot
-  python scripts/quality_metrics.py --json -        # JSON only, no summary
-  python scripts/quality_metrics.py --baseline b.json   # compare and exit 1
+  python script/quality_metrics.py                 # human summary
+  python script/quality_metrics.py --json out.json # + write the snapshot
+  python script/quality_metrics.py --json -        # JSON only, no summary
+  python script/quality_metrics.py --baseline b.json   # compare and exit 1
                                                         # on a regression
 
 DELIBERATELY NOT A PASS/FAIL ORACLE for the complexity numbers. Radjenovic et

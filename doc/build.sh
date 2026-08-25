@@ -2,7 +2,7 @@
 # Build the documentation: regenerate the language map from the two
 # sidebars, render both language projects into ../site/{en,de}, then
 # apply the offline repairs so the result works from a plain file tree.
-# Verify with:  python3 docs/offline/smoketest.py site/en site/de
+# Verify with:  python3 doc/offline/smoketest.py site/en site/de
 set -e
 cd "$(dirname "$0")"
 
@@ -13,7 +13,7 @@ cd "$(dirname "$0")"
 PINNED="1.10.18"
 ACTUAL="$(quarto --version)"
 if [ "$ACTUAL" != "$PINNED" ] && [ -z "$ALLOW_UNPINNED_QUARTO" ]; then
-  echo "docs/build.sh: quarto is $ACTUAL, pinned is $PINNED" >&2
+  echo "doc/build.sh: quarto is $ACTUAL, pinned is $PINNED" >&2
   echo "  upgrades are deliberate: ALLOW_UNPINNED_QUARTO=1, smoketest," >&2
   echo "  eyeball a site, then edit PINNED here and in the CI workflow" >&2
   exit 1
