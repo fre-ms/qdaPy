@@ -83,3 +83,31 @@ und illustriert die Daten.
 
 Weicht ein Ergebnis in qdaPy von dem im qdaZ-Plugin ab, ist das ein Fehler, den zu melden sich lohnt,
 und keine Ansichtssache. Die beiden Bibliotheken werden gegeneinander an gemeinsamen Prüfdaten getestet.
+
+```{=html}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "qdaPy",
+  "description": "Die von den Zotero-Plugins zotQDA und qdaZ oder aus REFI-QDA-Projekten exportierten Kodierungen in Python auswerten: Intercoder-Reliabilitaet und die Statistik, die die Plugins bewusst weglassen.",
+  "applicationCategory": "ResearchApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "softwareVersion": "0.1.0",
+  "license": "https://www.gnu.org/licenses/agpl-3.0",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "fre.ms",
+      "url": "https://fre.ms"
+    }
+  ],
+  "url": "https://qdapy.zotqda.org",
+  "codeRepository": "https://github.com/fre-ms/qdaPy",
+  "inLanguage": "de",
+  "sameAs": "https://doi.org/10.5281/zenodo.22109965",
+  "identifier": "https://doi.org/10.5281/zenodo.22109965"
+}
+</script>
+```
