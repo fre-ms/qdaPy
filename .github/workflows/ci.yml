@@ -124,7 +124,7 @@ jobs:
     # run, and fails if any of them skips anyway.
     #
     # Set the repository variable QDAR_PUBLISHED to "true" once
-    # github.com/fre-ms/qdaR exists; until then this job stays off rather
+    # github.com/easyqda/qdaR exists; until then this job stays off rather
     # than failing for a reason that is not a defect.
     name: cross-language congruence
     if: vars.QDAR_PUBLISHED == 'true'
@@ -136,7 +136,7 @@ jobs:
 
       - uses: actions/checkout@v5
         with:
-          repository: fre-ms/qdaR
+          repository: easyqda/qdaR
           path: qdaR
 
       - name: Install uv

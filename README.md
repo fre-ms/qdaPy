@@ -1,11 +1,11 @@
 # qdaPy
 
-[![CI](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml)
+[![CI](https://github.com/easyqda/qdaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/easyqda/qdaPy/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/qdaPy)](https://pypi.org/project/qdaPy/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22109965-blue)](https://doi.org/10.5281/zenodo.22109965)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![Project status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![License: AGPL-3.0](https://img.shields.io/github/license/fre-ms/qdaPy)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/github/license/easyqda/qdaPy)](LICENSE)
 
 Analyse the qualitative coding that the Zotero plugins
 [zotQDA](https://zotqda.org) and qdaZ export.

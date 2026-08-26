@@ -104,7 +104,7 @@ und keine Ansichtssache. Die beiden Bibliotheken werden gegeneinander an gemeins
     }
   ],
   "url": "https://qdapy.zotqda.org",
-  "codeRepository": "https://github.com/fre-ms/qdaPy",
+  "codeRepository": "https://github.com/easyqda/qdaPy",
   "inLanguage": "de",
   "sameAs": "https://doi.org/10.5281/zenodo.22109965",
   "identifier": "https://doi.org/10.5281/zenodo.22109965"

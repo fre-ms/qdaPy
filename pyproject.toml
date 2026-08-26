@@ -73,9 +73,9 @@ quality = [
 [project.urls]
 Homepage = "https://zotqda.org"
 Documentation = "https://qdapy.zotqda.org/"
-Source = "https://github.com/fre-ms/qdaPy"
-Issues = "https://github.com/fre-ms/qdaPy/issues"
-"R twin (qdaR)" = "https://github.com/fre-ms/qdaR"
+Source = "https://github.com/easyqda/qdaPy"
+Issues = "https://github.com/easyqda/qdaPy/issues"
+"R twin (qdaR)" = "https://github.com/easyqda/qdaR"
 
 [tool.hatch.version]
 path = "src/qdapy/_version.py"

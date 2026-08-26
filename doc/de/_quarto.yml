@@ -24,7 +24,7 @@ link-citations: true
 website:
   title: qdaPy
   site-url: https://qdapy.zotqda.org/latest/de/
-  repo-url: https://github.com/fre-ms/qdaPy
+  repo-url: https://github.com/easyqda/qdaPy
   navbar:
     search: true
     # Beim Scrollen sichtbar bleiben; der
@@ -51,7 +51,7 @@ website:
       # Das Theme rückt diesen Eintrag über die rechte Seitenleiste.
       - icon: github
         text: GitHub
-        href: https://github.com/fre-ms/qdaPy
+        href: https://github.com/easyqda/qdaPy
   sidebar:
     style: docked
     collapse-level: 3

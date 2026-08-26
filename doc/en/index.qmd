@@ -103,7 +103,7 @@ tested against each other on shared reference data.
     }
   ],
   "url": "https://qdapy.zotqda.org",
-  "codeRepository": "https://github.com/fre-ms/qdaPy",
+  "codeRepository": "https://github.com/easyqda/qdaPy",
   "inLanguage": "en",
   "sameAs": "https://doi.org/10.5281/zenodo.22109965",
   "identifier": "https://doi.org/10.5281/zenodo.22109965"
