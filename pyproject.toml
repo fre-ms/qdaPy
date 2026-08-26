@@ -12,7 +12,7 @@ description = "Analyse qualitative coding from the zotQDA Zotero plugins, or fro
 readme = "README.md"
 requires-python = ">=3.11"
 license = "AGPL-3.0-or-later"
-license-files = ["LICENSE", "LICENSE-EXCEPTION.md"]
+license-files = ["LICENSE", "AGPL-ADDITIONAL-PERMISSION.md"]
 authors = [{ name = "fre.ms", email = "fre.ms@fre.ms" }]
 maintainers = [{ name = "fre.ms", email = "fre.ms@fre.ms" }]
 keywords = [
@@ -90,7 +90,7 @@ include = [
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
-    "LICENSE-EXCEPTION.md",
+    "AGPL-ADDITIONAL-PERMISSION.md",
     "PROVENANCE.md",
     "pyproject.toml",
 ]

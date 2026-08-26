@@ -3,7 +3,7 @@
 [![CI](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![Project status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/github/license/fre-ms/qdaPy)](LICENSE)
 
 Analyse the qualitative coding that the Zotero plugins
 [zotQDA](https://zotqda.org) and qdaZ export.
@@ -147,7 +147,7 @@ and the R twin qdaR.
 **What you produce with qdaPy is yours.** Figures, tables, coefficients,
 reports: the licence places no condition on any of it, by an additional
 permission under section 7 of the AGPL
-([`LICENSE-EXCEPTION.md`](LICENSE-EXCEPTION.md)). Strictly speaking that
+([`AGPL-ADDITIONAL-PERMISSION.md`](AGPL-ADDITIONAL-PERMISSION.md)). Strictly speaking that
 changes nothing, a copyleft licence has never reached into a program's output
 — but a figure in a submitted manuscript is not the place for a licensing
 question, so it is written down.

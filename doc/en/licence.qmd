@@ -11,7 +11,7 @@ The full text is in `LICENSE`.
 Figures, tables, coefficients, reports, the analysis scripts you wrote: the
 licence places no condition on any of it. That is granted explicitly as an
 additional permission under section 7 of the AGPL, in
-`LICENSE-EXCEPTION.md`.
+`AGPL-ADDITIONAL-PERMISSION.md`.
 
 Strictly speaking the clause changes nothing, a copyleft licence has never
 reached into a program's output, and the Free Software Foundation says so in

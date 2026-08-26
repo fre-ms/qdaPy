@@ -11,7 +11,7 @@ R-Zwilling [qdaR](https://qdar.zotqda.org). Der vollständige Text steht in `LIC
 Abbildungen, Tabellen, Koeffizienten, Berichte, die Auswertungsskripte, die Sie
 geschrieben haben: Die Lizenz knüpft daran keinerlei Bedingung. Das ist
 ausdrücklich als zusätzliche Erlaubnis nach Abschnitt 7 der AGPL eingeräumt, in
-`LICENSE-EXCEPTION.md`.
+`AGPL-ADDITIONAL-PERMISSION.md`.
 
 Streng genommen ändert die Klausel nichts — eine Copyleft-Lizenz hat noch nie
 in die Ausgabe eines Programms hineingereicht, und die Free Software Foundation
