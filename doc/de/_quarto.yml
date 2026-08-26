@@ -114,9 +114,9 @@ website:
       [Impressum](https://qdapy.zotqda.org/latest/de/impressum.html) ·
       [Datenschutz](https://qdapy.zotqda.org/latest/de/datenschutz.html)
 
-# Das Aussehen kommt aus der vendorten zotqda-theme-Extension (Auffrischen
+# Das Aussehen kommt aus der vendorten easyqda-theme-Extension (Auffrischen
 # mit ../update-theme.sh); toc und code-copy bringt das Format mit.
 format:
-  zotqda-theme-html:
+  easyqda-theme-html:
     css: fonts/noto.css
     include-after-body: theme/scripts.html

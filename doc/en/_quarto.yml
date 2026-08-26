@@ -112,9 +112,9 @@ website:
       [Impressum](https://qdapy.zotqda.org/latest/en/impressum.html) ·
       [Privacy](https://qdapy.zotqda.org/latest/en/privacy.html)
 
-# The look comes from the vendored zotqda-theme extension (refresh it
+# The look comes from the vendored easyqda-theme extension (refresh it
 # with ../update-theme.sh); toc and code-copy are part of the format.
 format:
-  zotqda-theme-html:
+  easyqda-theme-html:
     css: fonts/noto.css
     include-after-body: theme/scripts.html
