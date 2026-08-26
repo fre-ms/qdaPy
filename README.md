@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/fre-ms/qdaPy/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/qdaPy)](https://pypi.org/project/qdaPy/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22109965.svg)](https://doi.org/10.5281/zenodo.22109965)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![Project status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License: AGPL-3.0](https://img.shields.io/github/license/fre-ms/qdaPy)](LICENSE)
