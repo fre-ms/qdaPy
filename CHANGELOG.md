@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0
+
+* Reads the **easyQDA-CSV-Collection** (contract `easyqda-collection`), the
+  lossless relational CSV serialisation of a project beside the REFI-QDA
+  `.qdpx`: `qdapy.read_collection(zip_or_dir)` returns a dict of DataFrames,
+  one per thematic table, each checked against the shipped `collection-v1.json`
+  (stamp, columns, version); `qdapy.read_collection_table` reads a single
+  table. The contract and reference samples are byte-identical with zotQDA.
+* The exchange contract moved to v2 under the easyQDA brand: the stamp column
+  is `easyqdaFormat`, the tables are `easyqda-*`, and format ids are `X/2`.
+
 ## 0.1.0
 
 First release.
