@@ -92,7 +92,7 @@ def test_a_selection_without_coding_becomes_uncoded(
 ) -> None:
     assert len(project.uncoded) == 1
     assert project.uncoded["code"].iloc[0] == ""
-    assert project.uncoded["zotqdaFormat"].iloc[0] == "uncoded/1"
+    assert project.uncoded["easyqdaFormat"].iloc[0] == "uncoded/2"
 
 
 def test_multiple_coding_is_found(project: qdapy.QdpxProject) -> None:
@@ -211,7 +211,7 @@ def test_crosstabs_by_metadata_are_empty_not_wrong(
 
 def test_a_frame_from_qdpx_is_shaped_like_one_from_csv() -> None:
     """Same columns, so nothing downstream needs to know where it came from."""
-    csv = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    csv = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     qdpx = qdapy.read_qdpx(FIXTURE, warn=False).fragments
     assert list(csv.columns) == list(qdpx.columns)
     assert isinstance(qdpx, pd.DataFrame)

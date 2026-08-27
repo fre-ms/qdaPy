@@ -20,7 +20,7 @@ Personen kodiert:
 ```{python}
 import qdapy
 
-frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
+frag = qdapy.read_fragments(qdapy.example("easyqda-fragments-demo.csv"))
 ```
 
 Die Korrespondenzanalyse legt Codes **und** Interviews in eine gemeinsame

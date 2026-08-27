@@ -18,7 +18,7 @@ interviews from two settings, coded by two people:
 ```{python}
 import qdapy
 
-frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
+frag = qdapy.read_fragments(qdapy.example("easyqda-fragments-demo.csv"))
 ```
 
 The correspondence analysis puts codes **and** interviews into one map, and

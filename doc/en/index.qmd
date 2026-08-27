@@ -50,7 +50,7 @@ which is also the import name.
 ```python
 import qdapy
 
-frag = qdapy.read_fragments("zotqda-fragments.csv")
+frag = qdapy.read_fragments("easyqda-fragments.csv")
 qdapy.code_counts(frag)
 qdapy.gg.frequencies(frag)
 ```

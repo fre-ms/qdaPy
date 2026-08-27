@@ -21,7 +21,7 @@ planning. A `.qdpx` supports a subset, reported on import.
 ```python
 import qdapy
 
-frag = qdapy.read_fragments("zotqda-fragments.csv")
+frag = qdapy.read_fragments("easyqda-fragments.csv")
 qdapy.gg.frequencies(frag)      # plotnine
 qdapy.sns.frequencies(frag)     # seaborn
 ```
@@ -47,7 +47,7 @@ version than this package knows stops with an error instead of being guessed
 at:
 
 ```python
-qdapy.read_fragments("zotqda-codebook.csv")
+qdapy.read_fragments("easyqda-codebook.csv")
 # ContractError: expected a 'fragments' export but got 'codebook'
 ```
 
@@ -74,7 +74,7 @@ bases that share nothing but the contract. The test suite checks this against
 frozen plugin results on randomly generated coder matrices.
 
 ```python
-u = qdapy.units(frag, uncoded=qdapy.read_uncoded("zotqda-uncoded.csv"))
+u = qdapy.units(frag, uncoded=qdapy.read_uncoded("easyqda-uncoded.csv"))
 qdapy.agreement.agreement(u)     # every measure side by side
 qdapy.level_agreement(u)         # and where in the code system agreement is lost
 ```

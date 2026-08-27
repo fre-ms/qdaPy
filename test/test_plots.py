@@ -218,7 +218,7 @@ def test_a_spec_states_its_provenance(tmp_path):
     path.write_text(json.dumps({
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "mark": "bar",
-        "usermeta": {"contract": "zotqda-exchange", "version": 1,
+        "usermeta": {"contract": "easyqda-exchange", "version": 1,
                      "producer": "qdaZ", "analysis": "frequencies"},
     }), encoding="utf-8")
     spec = qdapy.vega.read_spec(path)

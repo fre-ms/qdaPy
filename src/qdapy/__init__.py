@@ -6,7 +6,7 @@ checks them, redraws the figures in two grammars of graphics, and adds the
 inferential statistics the plugins leave out on purpose.
 
     >>> import qdapy
-    >>> frag = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    >>> frag = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     >>> counts = qdapy.code_counts(frag)
 
 Three plotting backends draw the same figures from the same tables:

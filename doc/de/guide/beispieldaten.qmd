@@ -9,12 +9,12 @@ Beispielen, Tests und dieser Dokumentation etwas Realistisches zu lesen
 hat:
 
 ```python
-frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
-hist = qdapy.read_history(qdapy.example("zotqda-history-demo.csv"))
+frag = qdapy.read_fragments(qdapy.example("easyqda-fragments-demo.csv"))
+hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
 ```
 
 Dieselben zwei Dateien liegen byte-identisch im R-Zwilling
-[qdaR](https://qdar.zotqda.org) (`qda_example("zotqda-fragments-demo.csv")`),
+[qdaR](https://qdar.zotqda.org) (`qda_example("easyqda-fragments-demo.csv")`),
 und ein Test in jedem Paket schlägt fehl, sobald die Kopien
 auseinanderlaufen. Ergebnisse darauf sind deshalb zwischen den Paketen bis
 auf die letzte Stelle vergleichbar, und beide Testsammlungen frieren die

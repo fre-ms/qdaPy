@@ -29,7 +29,7 @@ Diese Segmente kommen nur in die Matrix, wenn Sie den `uncoded`-Export
 übergeben:
 
 ```python
-u = qdapy.units(frag, uncoded=qdapy.read_uncoded("zotqda-uncoded.csv"))
+u = qdapy.units(frag, uncoded=qdapy.read_uncoded("easyqda-uncoded.csv"))
 ```
 
 Ohne ihn fehlen sie schlicht. Das Paket warnt Sie nicht, weil es nicht wissen

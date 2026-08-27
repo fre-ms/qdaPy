@@ -32,7 +32,7 @@ def test_an_item_is_reproduced_verbatim():
 
 
 def test_the_checklist_fills_what_the_data_knows_and_no_more():
-    frag = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    frag = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     cq = qdapy.coreq(frag)
     assert len(cq) == 32
     filled = set(cq[cq["filled"]]["item"])
@@ -56,7 +56,7 @@ def test_the_saturation_item_arrives_with_a_history():
 
 
 def test_the_coding_tree_item_arrives_with_a_codebook():
-    cb = qdapy.read_codebook(qdapy.example("zotqda-codebook.csv"))
+    cb = qdapy.read_codebook(qdapy.example("easyqda-codebook.csv"))
     cq = qdapy.coreq(codebook=cb)
     row = cq[cq["item"] == 25].iloc[0]
     assert row["filled"]
@@ -72,7 +72,7 @@ def test_the_software_item_names_both_tools_and_can_be_overridden():
 
 
 def test_the_markdown_carries_every_item_and_the_citation():
-    frag = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    frag = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     md = qdapy.coreq_markdown(qdapy.coreq(frag))
     assert "doi:10.1093/intqhc/mzm042" in md
     for number, _, _, name, _ in ITEMS:
@@ -107,7 +107,7 @@ def test_an_srqr_standard_is_reproduced_verbatim():
 
 
 def test_srqr_fills_what_the_data_knows():
-    frag = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    frag = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     sq = qdapy.srqr(frag)
     assert len(sq) == 21
     assert set(sq[sq["filled"]]["item"]) == {"S12", "S13", "S14", "S17"}
@@ -141,7 +141,7 @@ def test_the_saturation_standard_warns_which_saturation_it_means():
 
 
 def test_the_srqr_markdown_carries_every_standard_and_the_citation():
-    frag = qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+    frag = qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
     md = qdapy.srqr_markdown(qdapy.srqr(frag))
     assert "doi:10.1097/ACM.0000000000000388" in md
     from qdapy.reporting import SRQR_ITEMS

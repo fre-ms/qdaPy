@@ -5,7 +5,7 @@ title: "Reading exports"
 
 ## The stamp in the first column
 
-Every file [zotQDA](https://zotqda.org) writes starts with a `zotqdaFormat` column, and every row
+Every file [zotQDA](https://zotqda.org) writes starts with a `easyqdaFormat` column, and every row
 repeats the same value — `fragments/1`, `codebook/1`, and so on. The part
 before the slash says what kind of export you are holding; the number after it
 says which version of the exchange format was used.
@@ -14,7 +14,7 @@ says which version of the exchange format was used.
 shipped inside the package:
 
 ```python
-frag = qdapy.read("zotqda-fragments.csv")
+frag = qdapy.read("easyqda-fragments.csv")
 frag.attrs["qda_format"]    # 'fragments'
 frag.attrs["qda_version"]   # 1
 frag.attrs["qda_grain"]     # 'one row per annotation x code'
@@ -22,7 +22,7 @@ frag.attrs["qda_grain"]     # 'one row per annotation x code'
 
 Four things make it stop rather than continue:
 
-* the file has no `zotqdaFormat` column, so it is not a zotQDA export at all;
+* the file has no `easyqdaFormat` column, so it is not a zotQDA export at all;
 * it names a kind this package has never heard of;
 * it claims a version newer than the one implemented here;
 * a column the contract promises is missing.
@@ -58,7 +58,7 @@ Those reference files are installed with the package:
 
 ```python
 qdapy.example()                              # lists all nine
-qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
 ```
 
 Every example in this documentation runs on them, so you can try the whole
@@ -71,8 +71,8 @@ corresponds to which consensus code. Applying it adds a column and changes
 nothing else:
 
 ```python
-frag = qdapy.read_fragments("zotqda-fragments.csv")
-mapping = qdapy.read_mapping("zotqda-konsens-abbildung.csv")
+frag = qdapy.read_fragments("easyqda-fragments.csv")
+mapping = qdapy.read_mapping("easyqda-konsens-abbildung.csv")
 out = qdapy.apply_mapping(frag, mapping)
 out[["code", "consensusCode"]]
 ```

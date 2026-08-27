@@ -148,7 +148,7 @@ def _codebook(root: ET.Element) -> tuple[pd.DataFrame, dict[str, dict[str, str]]
             _walk_codes(codes, "", "", rows)
     by_guid = {r["codeId"]: {"code": r["code"], "color": r["color"]} for r in rows}
     df = pd.DataFrame(rows, columns=CODEBOOK_COLUMNS)
-    df.insert(0, "zotqdaFormat", "codebook/1")
+    df.insert(0, "easyqdaFormat", "codebook/2")
     return df, by_guid
 
 
@@ -317,7 +317,7 @@ def _history_from(frag: pd.DataFrame) -> pd.DataFrame:
     coded = frag[frag["code"] != ""]
     out = pd.DataFrame(
         {
-            "zotqdaFormat": "history/1",
+            "easyqdaFormat": "history/2",
             "ts": coded["codedAt"],
             "user": coded["codedBy"],
             "action": "add",
@@ -343,7 +343,7 @@ def _multi_coded_from(frag: pd.DataFrame) -> pd.DataFrame:
         if len(distinct) > 1:
             rows.append(
                 {
-                    "zotqdaFormat": "multi-coded/1",
+                    "easyqdaFormat": "multi-coded/2",
                     "document": grp["title"].iloc[0],
                     "text": grp["text"].iloc[0],
                     "codes": "+".join(distinct),
@@ -351,7 +351,7 @@ def _multi_coded_from(frag: pd.DataFrame) -> pd.DataFrame:
                     "coder": coder,
                 }
             )
-    cols = ["zotqdaFormat", "document", "text", "codes", "n", "coder"]
+    cols = ["easyqdaFormat", "document", "text", "codes", "n", "coder"]
     return pd.DataFrame(rows, columns=cols)
 
 
@@ -420,11 +420,11 @@ def read_qdpx(path: str | Path, *, warn: bool = True) -> QdpxProject:
     _count_unsupported(root, skipped)
 
     frag = pd.DataFrame(rows, columns=FRAGMENT_COLUMNS)
-    frag.insert(0, "zotqdaFormat", "fragments/1")
+    frag.insert(0, "easyqdaFormat", "fragments/2")
     frag = _coerce_numbers(frag, "fragments")
     codebook = _coerce_numbers(codebook, "codebook")
     uncoded = frag[frag["code"] == ""].reset_index(drop=True).copy()
-    uncoded["zotqdaFormat"] = "uncoded/1"
+    uncoded["easyqdaFormat"] = "uncoded/2"
     coded = frag[frag["code"] != ""].reset_index(drop=True)
 
     for df, kind in ((coded, "fragments"), (uncoded, "uncoded"),

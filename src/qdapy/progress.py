@@ -36,7 +36,7 @@ def codings(
     coding that actually stood at the end -- the same reconstruction qdaZ
     itself makes -- so it can be reshaped for agreement:
 
-        >>> hist = qdapy.read_history(qdapy.example("zotqda-history-demo.csv"))
+        >>> hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
         >>> matrix = qdapy.units(qdapy.codings(hist), coder="user")
         >>> qdapy.agreement.agreement(matrix)  # doctest: +SKIP
 

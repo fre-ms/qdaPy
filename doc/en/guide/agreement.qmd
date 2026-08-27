@@ -26,7 +26,7 @@ how well did the coders agree *about the material one of them marked*.
 Those segments only enter the matrix if you pass the `uncoded` export:
 
 ```python
-u = qdapy.units(frag, uncoded=qdapy.read_uncoded("zotqda-uncoded.csv"))
+u = qdapy.units(frag, uncoded=qdapy.read_uncoded("easyqda-uncoded.csv"))
 ```
 
 Without it they are simply absent. The package will not warn you, because it

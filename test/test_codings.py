@@ -74,7 +74,7 @@ def test_missing_column_raises():
 
 
 def test_reconstructs_demo_reliability_from_history():
-    hist = qdapy.read_history(qdapy.example("zotqda-history-demo.csv"))
+    hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
     codings = qdapy.codings(hist)
     assert set(codings.columns) >= {"annotationKey", "user", "code"}
     assert sorted(codings["user"].unique()) == ["ann", "bob"]

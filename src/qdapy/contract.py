@@ -49,7 +49,7 @@ def contract(path: str | Path | None = None) -> dict[str, Any]:
         shipped with this package, so nothing here needs a Zotero
         installation.
     """
-    p = Path(path) if path is not None else _data_dir() / "exchange-v1.json"
+    p = Path(path) if path is not None else _data_dir() / "exchange-v2.json"
     if not p.exists():
         raise FileNotFoundError(f"exchange contract not found: {p}")
     return _load(str(p))

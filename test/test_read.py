@@ -26,7 +26,7 @@ def fragments_csv(rows, *, sep=",", stamp="fragments/1", columns=None):
 
 
 def test_reads_a_semicolon_file(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A",
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A",
                            "weight": 2}], sep=";")
     df = qdapy.read(write(tmp_path, "semi.csv", text))
     assert list(df.columns) == FRAG_COLS
@@ -35,13 +35,13 @@ def test_reads_a_semicolon_file(tmp_path):
 
 
 def test_reads_a_file_without_a_byte_order_mark(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A"}])
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A"}])
     df = qdapy.read(write(tmp_path, "nobom.csv", text, bom=False))
-    assert df.columns[0] == "zotqdaFormat"
+    assert df.columns[0] == "easyqdaFormat"
 
 
 def test_the_mark_never_ends_up_in_a_column_name(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A"}])
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A"}])
     df = qdapy.read(write(tmp_path, "bom.csv", text))
     assert not any(c.startswith("﻿") for c in df.columns)
 
@@ -60,7 +60,7 @@ def test_delimiter_detection(header, expected):
 
 
 def test_numeric_contract_columns_become_numbers(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A",
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A",
                            "weight": 3}])
     df = qdapy.read(write(tmp_path, "num.csv", text))
     # integral or floating, but not text -- pandas narrows to int when it can
@@ -69,7 +69,7 @@ def test_numeric_contract_columns_become_numbers(tmp_path):
 
 
 def test_an_unparsable_number_becomes_missing_not_zero(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A",
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A",
                            "weight": "viel"}])
     df = qdapy.read(write(tmp_path, "bad.csv", text))
     assert pd.isna(df.iloc[0]["weight"])
@@ -82,38 +82,38 @@ def test_a_file_without_the_stamp_column_is_refused(tmp_path):
 
 
 def test_an_unknown_kind_is_refused(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "sentiments/1", "code": "A"}])
+    text = fragments_csv([{"easyqdaFormat": "sentiments/1", "code": "A"}])
     with pytest.raises(ContractError, match="unknown export kind"):
         qdapy.read(write(tmp_path, "unknown.csv", text))
 
 
 def test_a_newer_version_is_refused_rather_than_guessed_at(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/2", "code": "A"}])
+    text = fragments_csv([{"easyqdaFormat": "fragments/3", "code": "A"}])
     with pytest.raises(ContractError, match="please update qdaPy"):
         qdapy.read(write(tmp_path, "future.csv", text))
 
 
 def test_an_older_version_is_still_read(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/0", "code": "A"}])
+    text = fragments_csv([{"easyqdaFormat": "fragments/0", "code": "A"}])
     df = qdapy.read(write(tmp_path, "old.csv", text))
     assert df.attrs["qda_version"] == 0
 
 
 def test_a_file_mixing_two_formats_is_refused(tmp_path):
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A"},
-                          {"zotqdaFormat": "codebook/1", "code": "B"}])
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A"},
+                          {"easyqdaFormat": "codebook/1", "code": "B"}])
     with pytest.raises(ContractError, match="mixes formats"):
         qdapy.read(write(tmp_path, "mixed.csv", text))
 
 
 def test_the_wrong_export_is_caught_when_a_format_is_demanded():
     with pytest.raises(ContractError, match="expected a 'fragments' export"):
-        qdapy.read_fragments(qdapy.example("zotqda-codebook.csv"))
+        qdapy.read_fragments(qdapy.example("easyqda-codebook.csv"))
 
 
 def test_missing_contract_columns_are_an_error_but_can_be_waived(tmp_path):
-    columns = ["zotqdaFormat", "code", "annotationKey", "codedBy"]
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A"}],
+    columns = ["easyqdaFormat", "code", "annotationKey", "codedBy"]
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A"}],
                          columns=columns)
     path = write(tmp_path, "short.csv", text)
     with pytest.raises(ContractError, match="missing contract columns"):
@@ -124,7 +124,7 @@ def test_missing_contract_columns_are_an_error_but_can_be_waived(tmp_path):
 
 def test_extra_columns_are_accepted_without_complaint(tmp_path):
     columns = [*FRAG_COLS, "somethingNew"]
-    text = fragments_csv([{"zotqdaFormat": "fragments/1", "code": "A",
+    text = fragments_csv([{"easyqdaFormat": "fragments/1", "code": "A",
                            "somethingNew": "x"}], columns=columns)
     df = qdapy.read(write(tmp_path, "extra.csv", text))
     assert df.iloc[0]["somethingNew"] == "x"
@@ -144,11 +144,11 @@ def test_a_header_without_rows_is_an_error(tmp_path):
 @pytest.mark.parametrize(
     ("reader", "name"),
     [
-        (qdapy.read_fragments, "zotqda-fragments.csv"),
-        (qdapy.read_uncoded, "zotqda-uncoded.csv"),
-        (qdapy.read_codebook, "zotqda-codebook.csv"),
-        (qdapy.read_history, "zotqda-history.csv"),
-        (qdapy.read_mapping, "zotqda-konsens-abbildung.csv"),
+        (qdapy.read_fragments, "easyqda-fragments.csv"),
+        (qdapy.read_uncoded, "easyqda-uncoded.csv"),
+        (qdapy.read_codebook, "easyqda-codebook.csv"),
+        (qdapy.read_history, "easyqda-history.csv"),
+        (qdapy.read_mapping, "easyqda-konsens-abbildung.csv"),
     ],
 )
 def test_each_named_reader_accepts_its_own_file(reader, name):

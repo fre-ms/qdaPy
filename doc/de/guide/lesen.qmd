@@ -5,7 +5,7 @@ title: "Exporte lesen"
 
 ## Der Stempel in der ersten Spalte
 
-Jede Datei, die [zotQDA](https://zotqda.org) schreibt, beginnt mit einer Spalte `zotqdaFormat`, und
+Jede Datei, die [zotQDA](https://zotqda.org) schreibt, beginnt mit einer Spalte `easyqdaFormat`, und
 jede Zeile wiederholt denselben Wert — `fragments/1`, `codebook/1` und so
 weiter. Der Teil vor dem Schrägstrich sagt, welche Art von Export Sie in der
 Hand haben; die Zahl dahinter, welche Version des Austauschformats verwendet
@@ -15,7 +15,7 @@ wurde.
 die im Paket mitgeliefert wird:
 
 ```python
-frag = qdapy.read("zotqda-fragments.csv")
+frag = qdapy.read("easyqda-fragments.csv")
 frag.attrs["qda_format"]    # 'fragments'
 frag.attrs["qda_version"]   # 1
 frag.attrs["qda_grain"]     # 'one row per annotation x code'
@@ -23,7 +23,7 @@ frag.attrs["qda_grain"]     # 'one row per annotation x code'
 
 Vier Dinge lassen es abbrechen statt weitermachen:
 
-* Die Datei hat keine Spalte `zotqdaFormat`, ist also gar kein zotQDA-Export.
+* Die Datei hat keine Spalte `easyqdaFormat`, ist also gar kein zotQDA-Export.
 * Sie nennt eine Art, die dieses Paket nie gehört hat.
 * Sie beansprucht eine neuere Version als die hier umgesetzte.
 * Eine Spalte, die der Vertrag zusagt, fehlt.
@@ -61,7 +61,7 @@ Diese Referenzdateien werden mit dem Paket installiert:
 
 ```python
 qdapy.example()                              # listet alle neun auf
-qdapy.read_fragments(qdapy.example("zotqda-fragments.csv"))
+qdapy.read_fragments(qdapy.example("easyqda-fragments.csv"))
 ```
 
 Jedes Beispiel in dieser Dokumentation läuft auf ihnen, Sie können das ganze
@@ -74,8 +74,8 @@ welchem Konsens-Code entspricht. Das Anwenden fügt eine Spalte hinzu und
 ändert sonst nichts:
 
 ```python
-frag = qdapy.read_fragments("zotqda-fragments.csv")
-mapping = qdapy.read_mapping("zotqda-konsens-abbildung.csv")
+frag = qdapy.read_fragments("easyqda-fragments.csv")
+mapping = qdapy.read_mapping("easyqda-konsens-abbildung.csv")
 out = qdapy.apply_mapping(frag, mapping)
 out[["code", "consensusCode"]]
 ```

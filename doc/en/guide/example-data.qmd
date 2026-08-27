@@ -8,12 +8,12 @@ pair, so every function that reads real exports has something realistic to
 read in examples, tests and this documentation:
 
 ```python
-frag = qdapy.read_fragments(qdapy.example("zotqda-fragments-demo.csv"))
-hist = qdapy.read_history(qdapy.example("zotqda-history-demo.csv"))
+frag = qdapy.read_fragments(qdapy.example("easyqda-fragments-demo.csv"))
+hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
 ```
 
 The same two files ship byte-identically in the R twin
-[qdaR](https://qdar.zotqda.org) (`qda_example("zotqda-fragments-demo.csv")`),
+[qdaR](https://qdar.zotqda.org) (`qda_example("easyqda-fragments-demo.csv")`),
 and a test in each package fails if the copies ever drift apart. Results
 computed on them are therefore comparable across the two packages down to
 the last digit, and both test suites freeze the coefficients below.
