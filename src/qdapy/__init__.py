@@ -49,6 +49,12 @@ from .agreement import (
     units,
     units_binary,
 )
+from .collection import (
+    collection_contract,
+    collection_tables,
+    read_collection,
+    read_collection_table,
+)
 from .contract import contract, example, formats, stamp_column
 from .discovery import documents_for, saturation_index
 from .frames import code_counts, code_matrix, saturation, timeline
@@ -133,8 +139,12 @@ __all__ = [
     "code_drift",
     "code_matrix",
     "codings",
+    "collection_contract",
+    "collection_tables",
     "confusion",
     "contract",
+    "read_collection",
+    "read_collection_table",
     "coreq",
     "coreq_markdown",
     "discovery",
