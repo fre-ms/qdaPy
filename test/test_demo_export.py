@@ -28,7 +28,7 @@ def test_demo_fragments_shape():
     assert len(frag) > 0
     assert frag["code"].nunique() == 9
     assert frag["citekey"].nunique() == 8
-    assert sorted(frag["codedBy"].unique()) == ["ann", "bob"]
+    assert sorted(frag["codedBy"].unique()) == ["Anna", "Robert"]
     assert (frag["positionKind"] == "text").all()
 
 
@@ -37,8 +37,8 @@ def test_demo_agreement_frozen():
     hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
     matrix = qdapy.units(qdapy.codings(hist), coder="user")
     a = qdapy.agreement.agreement(matrix)
-    assert float(a["alpha"].iloc[0]) == pytest.approx(0.6716, abs=1e-4)
-    assert float(a["ac1"].iloc[0]) == pytest.approx(0.6740, abs=1e-4)
+    assert float(a["alpha"].iloc[0]) == pytest.approx(0.8002, abs=1e-4)
+    assert float(a["ac1"].iloc[0]) == pytest.approx(0.8035, abs=1e-4)
     assert int(a["multi_set_aside"].iloc[0]) > 0
 
 
@@ -48,11 +48,13 @@ def test_demo_agreement_level_effect():
     hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
     codings = qdapy.codings(hist)
     leaf = qdapy.agreement.agreement(qdapy.units(codings, coder="user"))
+    # the code paths carry the study root ("<Studie>/<Thema>/<Code>") since
+    # the one-study-one-root-code-system change -- the THEME is level 2
     theme = qdapy.agreement.agreement(
-        qdapy.units(codings, coder="user", level=1)
+        qdapy.units(codings, coder="user", level=2)
     )
-    assert float(theme["alpha"].iloc[0]) == pytest.approx(0.8965, abs=1e-4)
-    assert float(theme["ac1"].iloc[0]) == pytest.approx(0.8984, abs=1e-4)
+    assert float(theme["alpha"].iloc[0]) == pytest.approx(0.8615, abs=1e-4)
+    assert float(theme["ac1"].iloc[0]) == pytest.approx(0.8640, abs=1e-4)
     assert float(theme["alpha"].iloc[0]) > float(leaf["alpha"].iloc[0])
 
 

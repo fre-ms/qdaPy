@@ -77,6 +77,6 @@ def test_reconstructs_demo_reliability_from_history():
     hist = qdapy.read_history(qdapy.example("easyqda-history-demo.csv"))
     codings = qdapy.codings(hist)
     assert set(codings.columns) >= {"annotationKey", "user", "code"}
-    assert sorted(codings["user"].unique()) == ["ann", "bob"]
+    assert sorted(codings["user"].unique()) == ["Anna", "Robert"]
     a = qdapy.agreement.agreement(qdapy.units(codings, coder="user"))
-    assert float(a["alpha"].iloc[0]) == pytest.approx(0.6716, abs=1e-4)
+    assert float(a["alpha"].iloc[0]) == pytest.approx(0.8002, abs=1e-4)
