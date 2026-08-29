@@ -58,6 +58,34 @@ def collection_tables(ct: dict[str, Any] | None = None) -> dict[str, dict[str, A
     return (ct or collection_contract())["tables"]
 
 
+def _check_stamp(
+    rows: list[dict[str, str]],
+    stamp: str,
+    spec: dict[str, Any],
+    ct: dict[str, Any],
+    table: str,
+) -> int:
+    """Validate a table's stamp column and return the declared version."""
+    ids = {r[stamp] for r in rows if r.get(stamp)}
+    if len(ids) != 1:
+        raise ContractError(f"table {table} mixes stamps: {', '.join(sorted(ids))}")
+    declared = next(iter(ids))
+    kind, _, version_text = declared.partition("/")
+    if kind != spec["id"].split("/")[0]:
+        raise ContractError(
+            f"table {table} is stamped {kind!r}, expected "
+            f"{spec['id'].split('/')[0]!r}")
+    try:
+        version = int(version_text)
+    except ValueError as exc:
+        raise ContractError(f"unreadable version in {declared!r}") from exc
+    if version > ct["version"]:
+        raise ContractError(
+            f"collection uses version {version}, this package implements "
+            f"{ct['version']} -- please update qdaPy")
+    return version
+
+
 def _read_csv_text(text: str, table: str, ct: dict[str, Any]) -> pd.DataFrame:
     """Parse one stamped collection table and check it against the contract."""
     spec = collection_tables(ct).get(table)
@@ -79,23 +107,7 @@ def _read_csv_text(text: str, table: str, ct: dict[str, Any]) -> pd.DataFrame:
     if stamp not in columns:
         raise ContractError(f"not a collection table (no {stamp!r} column): {table}")
 
-    ids = {r[stamp] for r in rows if r.get(stamp)}
-    if len(ids) != 1:
-        raise ContractError(f"table {table} mixes stamps: {', '.join(sorted(ids))}")
-    declared = next(iter(ids))
-    kind, _, version_text = declared.partition("/")
-    if kind != spec["id"].split("/")[0]:
-        raise ContractError(
-            f"table {table} is stamped {kind!r}, expected "
-            f"{spec['id'].split('/')[0]!r}")
-    try:
-        version = int(version_text)
-    except ValueError as exc:
-        raise ContractError(f"unreadable version in {declared!r}") from exc
-    if version > ct["version"]:
-        raise ContractError(
-            f"collection uses version {version}, this package implements "
-            f"{ct['version']} -- please update qdaPy")
+    version = _check_stamp(rows, stamp, spec, ct, table)
 
     want = [c["key"] for c in spec["columns"]]
     missing = [c for c in want if c not in columns]
